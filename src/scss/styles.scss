@@ -1,0 +1,75 @@
+html, body {
+    margin: 0;
+    overflow: hidden;
+
+    background-color: black;
+    color: white;
+}
+
+body {
+    --scale: 1;
+    --pageHeight: 100vh;
+    --pageWidth: 100vw;
+}
+
+.content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--pageHeight);
+    width: var(--pageWidth);
+    overflow: hidden;
+}
+
+.touch-buttons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.touch-button-image {
+    width: 100%;
+
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+.touch-button {
+    position: absolute;
+    width: 20vmin;
+    height: 20vmin;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    background: none;
+    color: inherit;
+}
+
+.touch-button-left-right {
+    bottom: 0;
+    left: 0;
+    width: 40vmin;
+}
+
+.touch-button-jump {
+    bottom: 0;
+    right: 0;
+}
+
+.touch-button-restart {
+    top: 0;
+    right: 0;
+}
+
+.hidden {
+    display: none;
+}

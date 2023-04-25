@@ -1,3 +1,5 @@
+import { rejects } from "assert";
+
 export const images: {[key: string]: ImageInfo} = {};
 
 export interface ImageInfo {
@@ -10,7 +12,7 @@ export interface ImageInfo {
  * Asynchronously fetches an image.
  */
 export function loadImage({name, path, extension = 'png'} : {name: string, path: string, extension?: string}): Promise<ImageInfo> {
-    const promise = new Promise<ImageInfo>((resolve) => {
+    const promise = new Promise<ImageInfo>((resolve, reject) => {
         if (images.hasOwnProperty(name)) {
             throw new Error(`Already loaded image ${name}.`);
         }
@@ -33,9 +35,14 @@ export function loadImage({name, path, extension = 'png'} : {name: string, path:
             resolve(images[name]);
         }
         image.onerror = () => {
-            throw new Error(`Error loading image ${name}.`);
+            reject(`Error loading image ${name}.`)
         }
         image.src = imagePath;
     });
     return promise;
+}
+
+export const Images = {
+    loadImage,
+    images,
 }

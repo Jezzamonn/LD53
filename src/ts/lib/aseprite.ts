@@ -58,6 +58,7 @@ interface ImageMetadata {
     animations: {
         [key: string]: AnimationMetadata;
     };
+    loadPromise?: Promise<ImageMetadata>;
 }
 
 export type ColorMap = { [orig: string]: string };
@@ -99,10 +100,12 @@ interface ImageInfo {
  *
  * See `loadImage` for more info.
  */
-export function loadImages(imageInfos: ImageInfo[]) {
+export function loadImages(imageInfos: ImageInfo[]): Promise<ImageMetadata[]> {
+    const promises: Promise<ImageMetadata>[] = [];
     for (const imageInfo of imageInfos) {
-        loadImage(imageInfo);
+        promises.push(loadImage(imageInfo));
     }
+    return Promise.all(promises);
 }
 
 /**
@@ -119,13 +122,15 @@ export function loadImage({
     basePath = undefined,
     imagePath = undefined,
     jsonPath = undefined,
-}: ImageInfo) {
+}: ImageInfo): Promise<ImageMetadata> {
     if (!basePath && (!imagePath || !jsonPath)) {
-        throw "Must specify either a basePath or imagePath and jsonPath";
+        return Promise.reject(
+            "Must specify either a basePath or imagePath and jsonPath"
+        );
     }
 
     if (images.hasOwnProperty(name)) {
-        return;
+        return Promise.resolve(images[name]);
     }
 
     if (!imagePath || !jsonPath) {
@@ -146,18 +151,21 @@ export function loadImage({
         loaded: false,
         animations: {},
     };
-    const image = new Image();
-    image.onload = () => {
-        images[name].image = image;
-        images[name].imageLoaded = true;
-        images[name].loaded = images[name].jsonLoaded;
-    };
-    image.onerror = () => {
-        throw new Error(`Error loading image ${name}.`);
-    };
-    image.src = imagePath;
+    const imageLoadedPromise: Promise<void> = new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => {
+            images[name].image = image;
+            images[name].imageLoaded = true;
+            images[name].loaded = images[name].jsonLoaded;
+            resolve();
+        };
+        image.onerror = () => {
+            reject(`Error loading image ${name}.`);
+        };
+        image.src = imagePath!;
+    });
     // Load JSON metadata.
-    fetch(jsonPath)
+    const jsonLoadedPromise: Promise<void> = fetch(jsonPath)
         .then((response) => {
             if (response.status != 200) {
                 throw new Error(
@@ -188,6 +196,13 @@ export function loadImage({
             images[name].jsonLoaded = true;
             images[name].loaded = images[name].imageLoaded;
         });
+
+    const allLoadedPromise = Promise.all([
+        imageLoadedPromise,
+        jsonLoadedPromise,
+    ]).then(() => images[name]);
+    images[name].loadPromise = allLoadedPromise;
+    return allLoadedPromise;
 }
 
 function applyEffect(
@@ -224,17 +239,22 @@ function applyEffect(
 
     const canvas = effectFn(baseImageMetadata.image);
 
-    const image = new Image();
-    // Even though we're setting the source from a data url, it still needs to load.
-    image.onload = () => {
-        images[newName].image = image;
-        images[newName].imageLoaded = true;
-        images[newName].loaded = true;
-    };
-    image.onerror = () => {
-        throw new Error(`Error loading image ${name}.`);
-    };
-    image.src = canvas.toDataURL();
+    const imageLoadedPromise = new Promise<void>((resolve, reject) => {
+        const image = new Image();
+        // Even though we're setting the source from a data url, it still needs to load.
+        image.onload = () => {
+            images[newName].image = image;
+            images[newName].imageLoaded = true;
+            images[newName].loaded = true;
+            resolve();
+        };
+        image.onerror = () => {
+            reject(`Error loading image ${newName}.`);
+        };
+        image.src = canvas.toDataURL();
+    });
+
+    images[newName].loadPromise = imageLoadedPromise.then(() => images[newName]);
 
     return images[newName];
 }
@@ -288,7 +308,9 @@ export function applyColorMap(name: string, colorMap: ColorMap) {
                 const r = color[0];
                 const g = color[1];
                 const b = color[2];
-                const colorHex = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+                const colorHex = `#${r.toString(16)}${g.toString(
+                    16
+                )}${b.toString(16)}`;
                 if (colorMap.hasOwnProperty(colorHex)) {
                     const newColor = colorMap[colorHex];
                     context.fillStyle = newColor;
@@ -468,6 +490,7 @@ export function drawAnimation({
     flippedX = false,
     flippedY = false,
     filter = "",
+    loop = true
 }: {
     context: CanvasRenderingContext2D;
     image: string | ImageMetadata;
@@ -479,6 +502,7 @@ export function drawAnimation({
     flippedX?: boolean;
     flippedY?: boolean;
     filter?: string;
+    loop?: boolean;
 }): boolean {
     if (typeof image === "string") {
         image = images[image];
@@ -488,7 +512,7 @@ export function drawAnimation({
         return false;
     }
 
-    const frame = getFrame(image, animationName, time);
+    const frame = getFrame(image, animationName, time, loop);
 
     return drawSprite({
         context,
@@ -506,19 +530,29 @@ export function drawAnimation({
 /**
  * Figures out which frame of the animation we should draw.
  */
-function getFrame(
-    imageData: ImageMetadata,
+export function getFrame(
+    image: string | ImageMetadata,
     animationName: string,
-    time: number
+    time: number,
+    loop: boolean = true
 ) {
-    if (!imageData.frames) {
+    if (typeof image === "string") {
+        image = images[image];
+    }
+
+    if (!image.frames) {
         return -1;
     }
-    const animData = imageData.animations[animationName];
-    const localTimeMs = (1000 * time) % animData.length;
+    const animData = image.animations[animationName];
+    let localTimeMs = 1000 * time;
+    if (loop) {
+        localTimeMs %= animData.length;
+    } else {
+        localTimeMs = Math.min(localTimeMs, animData.length - 1);
+    }
     let cumulativeTimeMs = 0;
     for (let i = animData.from; i <= animData.to; i++) {
-        cumulativeTimeMs += imageData.frames[i].duration;
+        cumulativeTimeMs += image.frames[i].duration;
         if (cumulativeTimeMs > localTimeMs) {
             return i;
         }
@@ -536,3 +570,16 @@ export function disableSmoothing(context: CanvasRenderingContext2D) {
     (context as any).msImageSmoothingEnabled = false;
     (context as any).webkitImageSmoothingEnabled = false;
 }
+
+export const Aseprite = {
+    loadImage,
+    loadImages,
+    drawSprite,
+    drawAnimation,
+    disableSmoothing,
+    applyFilter,
+    getFrame,
+    get images() {
+        return images;
+    },
+};

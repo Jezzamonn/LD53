@@ -1,0 +1,16 @@
+/promo/*
+!promo/publish/
+
+/build/
+*.zip
+
+.vscode/
+node_modules
+profiles/
+
+*.ttf
+
+/music/
+!music/*.mp3
+
+/level/
