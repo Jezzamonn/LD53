@@ -63,23 +63,23 @@ export class Level {
                     // Don't need to do anything for empty tiles as they're the default.
                 }
                 else if (color === '000000') {
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Wall);
+                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Wall, { allowGrow: false });
                 }
                 else if (color === 'aaaaaa') {
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background, { allowGrow: false });
                 }
                 else if (color === 'ffff00') {
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal);
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown);
+                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal, { allowGrow: false });
+                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
                 }
                 else if (color === 'ff0000') {
                     this.start = basePos;
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn);
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown);
+                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn, { allowGrow: false });
+                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
                 }
                 else if (color === '0000ff') {
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Platform);
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown);
+                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Platform, { allowGrow: false });
+                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
                 }
                 else {
                     console.log(`Unknown color: ${color} at ${x}, ${y}.`);
