@@ -3,6 +3,8 @@ Code utilities for Ludum Dare
 
 This is a bunch of core game stuff stuff, mostly a simplified version of the code from my last Ludum Dare. Also the base typescript building stuff.
 
+![demo.gif](demo.gif)
+
 ## How to build things
 
 Install npm, then run
