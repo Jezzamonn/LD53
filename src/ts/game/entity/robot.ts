@@ -8,36 +8,38 @@ import { Entity } from "./entity"
 export enum RobotAction {
     MoveLeft,
     MoveRight,
+    Jump,
 }
 
 interface RobotActionData {
     action: RobotAction;
-    data: any;
+    data?: any;
 }
 
 const imageName = 'box';
 
 export class Robot extends Entity {
-
     queuedActions: RobotActionData[] = [];
 
     currentAction: RobotAction | undefined;
 
     moveSpeed = 1.5 * PHYSICS_SCALE * FPS;
+    jumpSpeed = 3.5 * PHYSICS_SCALE * FPS;
+    gravity = 0.3 * PHYSICS_SCALE * FPS * FPS;
 
     desiredMidX = 0;
 
     constructor(level: Level) {
         super(level);
         // TODO: Set w and h based on graphics
-        this.w = physFromPx(6);
-        this.h = physFromPx(10);
+        this.w = physFromPx(8);
+        this.h = physFromPx(5);
     }
 
     update(dt) {
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
-                const { action, data } = this.queuedActions.shift()!
+                const { action, data } = this.queuedActions.shift()!;
                 this.currentAction = action;
                 switch (this.currentAction) {
                     case RobotAction.MoveLeft:
@@ -46,9 +48,11 @@ export class Robot extends Entity {
                     case RobotAction.MoveRight:
                         this.startMoveRight(data ?? 1);
                         break;
+                    case RobotAction.Jump:
+                        this.startJump();
+                        break;
                 }
-            }
-            else {
+            } else {
                 this.checkForWin();
             }
         }
@@ -76,23 +80,38 @@ export class Robot extends Entity {
     }
 
     checkForWin() {
-        if (this.isTouchingTile(this.level.tiles.objectLayer, ObjectTile.Goal)) {
+        if (
+            this.isTouchingTile(this.level.tiles.objectLayer, ObjectTile.Goal)
+        ) {
             this.level.win();
         }
     }
 
     onLeftCollision(): void {
-        if (this.currentAction == RobotAction.MoveLeft || this.currentAction == RobotAction.MoveRight) {
+        super.onLeftCollision();
+        if (
+            this.currentAction == RobotAction.MoveLeft ||
+            this.currentAction == RobotAction.MoveRight
+        ) {
             this.currentAction = undefined;
         }
-        super.onLeftCollision();
     }
 
     onRightCollision(): void {
-        if (this.currentAction == RobotAction.MoveLeft || this.currentAction == RobotAction.MoveRight) {
+        super.onRightCollision();
+        if (
+            this.currentAction == RobotAction.MoveLeft ||
+            this.currentAction == RobotAction.MoveRight
+        ) {
             this.currentAction = undefined;
         }
-        super.onRightCollision();
+    }
+
+    onDownCollision() {
+        super.onDownCollision();
+        if (this.currentAction == RobotAction.Jump) {
+            this.currentAction = undefined;
+        }
     }
 
     /**
@@ -102,7 +121,6 @@ export class Robot extends Entity {
      */
     startMoveLeft(amount: number) {
         this.desiredMidX = this.midX - TILE_SIZE * amount;
-        this.currentAction = RobotAction.MoveLeft;
     }
 
     /**
@@ -112,14 +130,17 @@ export class Robot extends Entity {
      */
     startMoveRight(amount: number) {
         this.desiredMidX = this.midX + TILE_SIZE * amount;
-        this.currentAction = RobotAction.MoveRight;
+    }
+
+    startJump() {
+        this.dy = -this.jumpSpeed;
     }
 
     render(context: CanvasRenderingContext2D) {
-        let animationName = 'idle';
+        let animationName = "idle";
 
         if (Math.abs(this.dx) > 0.01) {
-            animationName = 'run';
+            animationName = "run";
         }
 
         Aseprite.drawAnimation({
@@ -127,9 +148,9 @@ export class Robot extends Entity {
             image: imageName,
             animationName,
             time: this.animCount,
-            position: {x: this.midX, y: this.maxY},
+            position: { x: this.midX, y: this.maxY },
             scale: PHYSICS_SCALE,
-            anchorRatios: {x: 0.5, y: 1},
+            anchorRatios: { x: 0.5, y: 1 },
             // filter: filter,
             flippedX: this.facingDir == FacingDir.Left,
         });
@@ -140,18 +161,26 @@ export class Robot extends Entity {
     }
 
     exportActionsToGlobal() {
-        (window as any).moveLeft = (tiles: number) => this.queuedActions.push({
-            action: RobotAction.MoveLeft,
-            data: tiles,
-        });
-        (window as any).moveRight = (tiles: number) => this.queuedActions.push({
-            action: RobotAction.MoveRight,
-            data: tiles,
-        });
+        (window as any).moveLeft = (tiles: number) => {
+            this.queuedActions.push({
+                action: RobotAction.MoveLeft,
+                data: tiles,
+            });
+        };
+        (window as any).moveRight = (tiles: number) => {
+            this.queuedActions.push({
+                action: RobotAction.MoveRight,
+                data: tiles,
+            });
+        };
+        (window as any).jump = () => {
+            this.queuedActions.push({
+                action: RobotAction.Jump,
+            });
+        };
     }
 
     static async preload() {
-        await Aseprite.loadImage({name: imageName, basePath: 'sprites'});
+        await Aseprite.loadImage({ name: imageName, basePath: "sprites" });
     }
-
 }

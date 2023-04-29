@@ -1,5 +1,5 @@
 import { Dir, Dirs, FacingDir, Point } from "../../common";
-import { FPS, PHYSICS_SCALE } from "../../constants";
+import { FPS, PHYSICS_SCALE, TILE_SIZE } from "../../constants";
 import { Level } from "../level";
 import { PhysicTile, TileSource } from "../tile/tiles";
 
@@ -77,7 +77,7 @@ export class Entity {
     }
 
     moveY(dt: number) {
-        const wasTouchingOneWayPlatform = this.isTouchingTile(this.level.tiles, PhysicTile.OneWayPlatform, { dir: Dir.Down });
+        const startTileIndexAtFeet = Math.floor(this.maxY / TILE_SIZE)
         this.y += this.dy * dt;
 
         this.y = Math.round(this.y);
@@ -85,6 +85,8 @@ export class Entity {
         if (!this.canCollide) {
             return;
         }
+
+        const endTileIndexAtFeed = Math.floor(this.maxY / TILE_SIZE)
 
         if (this.dy < 0) {
             if (this.isTouchingTile(this.level.tiles, PhysicTile.Wall, { dir: Dir.Up })) {
@@ -94,7 +96,7 @@ export class Entity {
             if (this.isTouchingTile(this.level.tiles, PhysicTile.Wall, { dir: Dir.Down })) {
                 this.onDownCollision();
             }
-            if (!wasTouchingOneWayPlatform && this.isTouchingTile(this.level.tiles, PhysicTile.OneWayPlatform, { dir: Dir.Down })) {
+            else if ((startTileIndexAtFeet != endTileIndexAtFeed) && this.isTouchingTile(this.level.tiles, PhysicTile.OneWayPlatform, { dir: Dir.Down })) {
                 this.onDownCollision();
             }
         }
