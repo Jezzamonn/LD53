@@ -9,15 +9,20 @@ export enum RobotAction {
     MoveRight,
 }
 
+interface RobotActionData {
+    action: RobotAction;
+    data: any;
+}
+
 export class Robot extends Entity {
 
-    queuedActions: RobotAction[] = [];
+    queuedActions: RobotActionData[] = [];
 
     currentAction: RobotAction | undefined;
 
     moveSpeed = 1.5 * PHYSICS_SCALE * FPS;
 
-    desiredX = 0;
+    desiredMidX = 0;
 
     constructor(level: Level) {
         super(level);
@@ -29,13 +34,14 @@ export class Robot extends Entity {
     update(dt) {
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
-                this.currentAction = this.queuedActions.shift();
+                const { action, data } = this.queuedActions.shift()!
+                this.currentAction = action;
                 switch (this.currentAction) {
                     case RobotAction.MoveLeft:
-                        this.startMoveLeft(1);
+                        this.startMoveLeft(data ?? 1);
                         break;
                     case RobotAction.MoveRight:
-                        this.startMoveRight(1);
+                        this.startMoveRight(data ?? 1);
                         break;
                 }
             }
@@ -47,15 +53,15 @@ export class Robot extends Entity {
         switch (this.currentAction) {
             case RobotAction.MoveLeft:
                 this.dx = -this.moveSpeed;
-                if (this.x <= this.desiredX) {
-                    this.x = this.desiredX;
+                if (this.midX <= this.desiredMidX) {
+                    this.midX = this.desiredMidX;
                     this.currentAction = undefined;
                 }
                 break;
             case RobotAction.MoveRight:
                 this.dx = this.moveSpeed;
-                if (this.x >= this.desiredX) {
-                    this.x = this.desiredX;
+                if (this.midX >= this.desiredMidX) {
+                    this.midX = this.desiredMidX;
                     this.currentAction = undefined;
                 }
                 break;
@@ -76,12 +82,14 @@ export class Robot extends Entity {
         if (this.currentAction == RobotAction.MoveLeft || this.currentAction == RobotAction.MoveRight) {
             this.currentAction = undefined;
         }
+        super.onLeftCollision();
     }
 
     onRightCollision(): void {
         if (this.currentAction == RobotAction.MoveLeft || this.currentAction == RobotAction.MoveRight) {
             this.currentAction = undefined;
         }
+        super.onRightCollision();
     }
 
     /**
@@ -90,7 +98,7 @@ export class Robot extends Entity {
      * @param amount Number of tiles to move left
      */
     startMoveLeft(amount: number) {
-        this.desiredX = this.x - TILE_SIZE * amount;
+        this.desiredMidX = this.midX - TILE_SIZE * amount;
         this.currentAction = RobotAction.MoveLeft;
     }
 
@@ -100,7 +108,7 @@ export class Robot extends Entity {
      * @param amount Number of tiles to move right
      */
     startMoveRight(amount: number) {
-        this.desiredX = this.x + TILE_SIZE * amount;
+        this.desiredMidX = this.midX + TILE_SIZE * amount;
         this.currentAction = RobotAction.MoveRight;
     }
 
@@ -113,8 +121,14 @@ export class Robot extends Entity {
     }
 
     exportActionsToGlobal() {
-        (window as any).moveLeft = () => this.queuedActions.push(RobotAction.MoveLeft);
-        (window as any).moveRight = () => this.queuedActions.push(RobotAction.MoveRight);
+        (window as any).moveLeft = (tiles: number) => this.queuedActions.push({
+            action: RobotAction.MoveLeft,
+            data: tiles,
+        });
+        (window as any).moveRight = (tiles: number) => this.queuedActions.push({
+            action: RobotAction.MoveRight,
+            data: tiles,
+        });
     }
 
 }
