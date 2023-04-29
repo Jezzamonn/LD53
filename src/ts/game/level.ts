@@ -11,6 +11,7 @@ import { Tiles } from "./tile/tiles";
 import { Background } from "./background";
 import { BaseTile } from "./tile/base-layer";
 import { ObjectTile } from "./tile/object-layer";
+import { Robot } from "./entity/robot";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -94,12 +95,14 @@ export class Level {
     }
 
     spawnPlayer() {
-        const player = new Player(this);
-        player.midX = this.start.x;
-        player.maxY = this.start.y;
-        this.entities.push(player);
+        const robot = new Robot(this);
+        robot.midX = this.start.x;
+        robot.maxY = this.start.y;
+        this.entities.push(robot);
 
-        this.camera.target = () => player.cameraFocus();
+        this.camera.target = () => robot.cameraFocus();
+
+        robot.exportActionsToGlobal();
     }
 
     update(dt: number) {

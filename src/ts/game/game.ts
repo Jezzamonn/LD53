@@ -2,7 +2,6 @@ import { GAME_HEIGHT_PX, GAME_WIDTH_PX, physFromPx, PHYSICS_SCALE, pxFromPhys, R
 import { Player } from "./entity/player";
 import { Sprite } from "./entity/sprite";
 import { Aseprite } from "../lib/aseprite";
-import { Images } from "../lib/images";
 import { ComboKeys, KeyboardKeys, NullKeys, RegularKeys } from "../lib/keys";
 import { Sounds } from "../lib/sounds";
 import { centerCanvas } from "./camera";
@@ -11,8 +10,6 @@ import { Levels, LEVELS } from "./levels";
 import { SFX } from "./sfx";
 import { Tiles } from "./tile/tiles";
 import { Background } from "./background";
-import { wait } from "../lib/util";
-import { TouchKeys } from "./touch-keys";
 
 export class Game {
 
@@ -40,7 +37,7 @@ export class Game {
         this.canvas = canvas;
         this.context = context;
 
-        this.keys = new ComboKeys(new KeyboardKeys(), new TouchKeys());
+        this.keys = new KeyboardKeys();
 
         Sounds.loadMuteState();
     }
