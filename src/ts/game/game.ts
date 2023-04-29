@@ -1,5 +1,4 @@
 import { GAME_HEIGHT_PX, GAME_WIDTH_PX, physFromPx, PHYSICS_SCALE, pxFromPhys, RESTART_KEYS, SELECT_KEYS, TIME_STEP, TITLE_KEYS } from "../constants";
-import { Player } from "./entity/player";
 import { Sprite } from "./entity/sprite";
 import { Aseprite } from "../lib/aseprite";
 import { ComboKeys, KeyboardKeys, NullKeys, RegularKeys } from "../lib/keys";
@@ -10,6 +9,7 @@ import { Levels, LEVELS } from "./levels";
 import { SFX } from "./sfx";
 import { Tiles } from "./tile/tiles";
 import { Background } from "./background";
+import { Robot } from "./entity/robot";
 
 export class Game {
 
@@ -196,7 +196,7 @@ export class Game {
         await Promise.all([
             Levels.preload(),
             Tiles.preload(),
-            Player.preload(),
+            Robot.preload(),
             Background.preload(),
         ]);
         SFX.preload();

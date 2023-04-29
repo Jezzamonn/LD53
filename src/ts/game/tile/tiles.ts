@@ -57,13 +57,13 @@ export class Tiles implements TileSource<PhysicTile> {
 
     getTile(p: Point): PhysicTile {
         const baseTile = this.baseLayer.getTile(p);
-        if (baseTile == BaseTile.Wall) {
-            return PhysicTile.Wall;
-        }
-
-        const objectTile = this.objectLayer.getTile(p);
-        if (objectTile == ObjectTile.Platform) {
-            return PhysicTile.OneWayPlatform;
+        switch (baseTile) {
+            case BaseTile.Outside:
+            case BaseTile.Wall:
+            case BaseTile.Ground:
+                return PhysicTile.Wall;
+            case BaseTile.Stairs:
+                return PhysicTile.OneWayPlatform;
         }
 
         return PhysicTile.Empty;

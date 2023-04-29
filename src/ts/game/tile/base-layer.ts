@@ -3,32 +3,35 @@ import { TILE_SIZE } from "../../constants";
 import { TileLayer } from "./tile-layer";
 
 export enum BaseTile {
-    Empty = 0,
+    Outside = 0,
     Wall = 1,
     Background = 2,
-    Unknown = 3, // Used temporarily when creating the level. Will be filled in later.
+    Unknown = 3, // Used temporarily when creating the level... maybe? Might be less relevant now.
+    Stairs = 4,
+    Ground = 5,
+    Darkness = 6,
+}
+
+// Position of the tile in the tileset.
+const tilePositions = {
+    [BaseTile.Wall]: { x: 0, y: 0 },
+    [BaseTile.Background]: { x: 1, y: 0 },
+    [BaseTile.Stairs]: { x: 3, y: 1 },
+    [BaseTile.Ground]: { x: 0, y: 1 },
+    [BaseTile.Darkness]: { x: 1, y: 1 },
 }
 
 export class BaseLayer extends TileLayer<BaseTile> {
 
     constructor(w: number, h: number) {
         super(w, h);
-
-        // // Add a floor and some walls.
-        // for (let y = 0; y < this.h; y++) {
-        //     for (let x = 0; x < this.w; x++) {
-        //         this.tiles[y][x] = y == (this.h - 1) ? BaseTile.Wall : BaseTile.Empty;
-        //     }
-        //     this.tiles[y][0] = BaseTile.Wall;
-        //     this.tiles[y][this.w - 1] = BaseTile.Wall;
-        // }
     }
 
     fillInUnknownTiles() {
         for (let y = this.minY; y <= this.maxY; y++) {
             for (let x = this.minX; x <= this.maxX; x++) {
                 if (this.getTile({x, y}) == BaseTile.Unknown) {
-                    console.log('filling in unknown tile', x, y)
+                    // console.log('filling in unknown tile', x, y)
                     // Unknown tiles are filled based on the tile to the left and right.
                     const horizontalTiles = [
                         this.getTile({ x: x - 1, y }),
@@ -60,80 +63,24 @@ export class BaseLayer extends TileLayer<BaseTile> {
         const tile = this.getTile(pos);
         const renderPos = {x: pos.x * TILE_SIZE, y: pos.y * TILE_SIZE }
 
-        if (tile == BaseTile.Wall) {
-            // Loop through each corner
-            for (const dx of [-1, 1]) {
-                const dxTile = this.getTile({ x: pos.x + dx, y: pos.y });
-                for (const dy of [-1, 1]) {
-                    const subTilePos = { x: dx < 0 ? 0 : 1, y: dy < 0 ? 0 : 1}
-                    const dyTile = this.getTile({ x: pos.x, y: pos.y + dy });
-                    const dxdyTile = this.getTile({ x: pos.x + dx, y: pos.y + dy });
-                    let tilePos: Point = { x: 0, y: 0 };
+        if (tilePositions.hasOwnProperty(tile)) {
+            this.drawTile(context, {tilePos: tilePositions[tile], renderPos});
+            return;
+        }
 
-                    switch (dxTile) {
-                        case BaseTile.Wall:
-                            tilePos.x += 1;
-                            break;
-                        case BaseTile.Background:
-                            tilePos.x += 2;
-                            break;
-                    }
-                    switch (dyTile) {
-                        case BaseTile.Wall:
-                            tilePos.y += 1;
-                            break;
-                    }
+        switch (tile) {
+            case BaseTile.Outside:
+                // If empty is next to a wall or a background tile, draw the little windowy wall piece.
+                const rightTile = this.getTile({x: pos.x + 1, y: pos.y});
+                const leftTile = this.getTile({x: pos.x - 1, y: pos.y});
 
-                    // // Special case for the corner piece.
-                    // if (dxTile == BaseTile.Wall && dyTile == BaseTile.Wall && dxdyTile != BaseTile.Wall) {
-                    //     tilePos.y += 2;
-                    // }
-
-                    this.drawQuarterTile(
-                        context,
-                        {
-                            tilePos,
-                            subTilePos,
-                            renderPos
-                        }
-                    );
+                if (rightTile != BaseTile.Outside) {
+                    this.drawTile(context, {tilePos: {x: 5, y: 0}, renderPos});
                 }
-            }
-        } else if (tile == BaseTile.Background) {
-            // A similar set of conditions as for the walls.
-            for (const dx of [-1, 1]) {
-                const dxTile = this.getTile({ x: pos.x + dx, y: pos.y });
-                for (const dy of [-1, 1]) {
-                    const subTilePos = { x: dx < 0 ? 0 : 1, y: dy < 0 ? 0 : 1}
-                    const dyTile = this.getTile({ x: pos.x, y: pos.y + dy });
-
-                    let tilePos: Point = { x: 3, y: 0 };
-
-                    switch (dxTile) {
-                        case BaseTile.Background:
-                        case BaseTile.Wall:
-                            tilePos.x += 1;
-                            break;
-                    }
-                    switch (dyTile) {
-                        case BaseTile.Background:
-                            tilePos.y += 1;
-                            break;
-                        case BaseTile.Wall:
-                            tilePos.y += 2;
-                            break;
-                    }
-
-                    this.drawQuarterTile(
-                        context,
-                        {
-                            tilePos,
-                            subTilePos,
-                            renderPos
-                        }
-                    );
+                else if (leftTile != BaseTile.Outside) {
+                    this.drawTile(context, {tilePos: {x: 6, y: 0}, renderPos});
                 }
-            }
+                break;
         }
     }
 

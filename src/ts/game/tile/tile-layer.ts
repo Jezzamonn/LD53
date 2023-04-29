@@ -21,6 +21,9 @@ export class TileLayer<T extends number> implements TileSource<T> {
 
     image: HTMLImageElement | undefined;
 
+    // If true, we'll extend the board when modifying tiles. Useful for explosions and such.
+    allowGrow = false;
+
     constructor(w: number, h: number) {
         this.w = w;
         this.h = h;
@@ -121,28 +124,28 @@ export class TileLayer<T extends number> implements TileSource<T> {
         );
     }
 
-    setTile(p: Point, tile: T, {allowGrow = true} = {}) {
+    setTile(p: Point, tile: T) {
         // If out of bounds, extend the board!
         let y = p.y;
-        while (allowGrow && y + this.y < 1) {
+        while (this.allowGrow && y + this.y < 1) {
             this.tiles.unshift(this.tiles[0].slice())
             this.y++;
             this.h++;
         }
-        while (allowGrow && y + this.y >= this.h - 1) {
+        while (this.allowGrow && y + this.y >= this.h - 1) {
             this.tiles.push(this.tiles[this.h - 1].slice())
             this.h++;
         }
 
         let x = p.x;
-        while (allowGrow && x + this.x < 1) {
+        while (this.allowGrow && x + this.x < 1) {
             for (let y = 0; y < this.h; y++) {
                 this.tiles[y].unshift(this.tiles[y][0]);
             }
             this.x++;
             this.w++;
         }
-        while (allowGrow && x + this.x >= this.w - 1) {
+        while (this.allowGrow && x + this.x >= this.w - 1) {
             for (let y = 0; y < this.h; y++) {
                 this.tiles[y].push(this.tiles[y][this.w - 1]);
             }
@@ -157,11 +160,11 @@ export class TileLayer<T extends number> implements TileSource<T> {
         this.tiles[p.y + this.y][p.x + this.x] = tile;
     }
 
-    setTileAtCoord(p: Point, tile: T, {allowGrow = true} = {}) {
+    setTileAtCoord(p: Point, tile: T) {
         this.setTile({
             x: Math.floor(p.x / TILE_SIZE),
             y: Math.floor(p.y / TILE_SIZE),
-        }, tile, {allowGrow});
+        }, tile);
     }
 
     getTile(p: Point): T {

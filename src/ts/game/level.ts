@@ -1,7 +1,6 @@
 import { Point } from "../common";
 import { rng, TILE_SIZE, TILE_SIZE_PX } from "../constants";
 import { Entity } from "./entity/entity";
-import { Player } from "./entity/player";
 import { Sprite } from "./entity/sprite";
 import { Images } from "../lib/images";
 import { Camera, FocusCamera } from "./camera";
@@ -60,36 +59,44 @@ export class Level {
                 const basePos = this.tiles.getTileCoord({x, y}, { x: 0.5, y: 1 })
 
                 const color = pixelToColorString(imageData, x, y);
-                if (color === 'ffffff') {
-                    // Don't need to do anything for empty tiles as they're the default.
-                }
-                else if (color === '000000') {
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Wall, { allowGrow: false });
-                }
-                else if (color === 'aaaaaa') {
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background, { allowGrow: false });
-                }
-                else if (color === 'ffff00') {
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal, { allowGrow: false });
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
-                }
-                else if (color === 'ff0000') {
-                    this.start = basePos;
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn, { allowGrow: false });
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
-                }
-                else if (color === '0000ff') {
-                    this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Platform, { allowGrow: false });
-                    this.tiles.baseLayer.setTile({ x, y }, BaseTile.Unknown, { allowGrow: false });
-                }
-                else {
-                    console.log(`Unknown color: ${color} at ${x}, ${y}.`);
+
+                switch (color) {
+                    case 'ffffff':
+                        // Don't need to do anything for sky tiles as they're the default.
+                        break;
+                    case '000000':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Ground);
+                        break;
+                    case '3a4466':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Wall);
+                        break;
+                    case '5a6988':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+                        break;
+                    case '262b44':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Darkness);
+                        break;
+                    case 'ffff00':
+                        this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal);
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+                        break;
+                    case 'ff0000':
+                        this.start = basePos;
+                        this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn);
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+                        break;
+                    case '0000ff':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Stairs);
+                        break;
+                    default:
+                        console.log(`Unknown color: ${color} at ${x}, ${y}.`);
+                        break;
                 }
             }
         }
         this.tiles.baseLayer.fillInUnknownTiles();
 
-        // this.camera.target = () => ({x: this.start.x, y: this.start.y});
+        this.camera.target = () => ({x: this.start.x, y: this.start.y});
 
         this.spawnPlayer();
     }

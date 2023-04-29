@@ -1,5 +1,6 @@
-import { Point } from "../../common";
+import { FacingDir, Point } from "../../common";
 import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
+import { Aseprite } from "../../lib/aseprite";
 import { Level } from "../level";
 import { ObjectTile } from "../tile/object-layer";
 import { Entity } from "./entity"
@@ -13,6 +14,8 @@ interface RobotActionData {
     action: RobotAction;
     data: any;
 }
+
+const imageName = 'box';
 
 export class Robot extends Entity {
 
@@ -113,7 +116,23 @@ export class Robot extends Entity {
     }
 
     render(context: CanvasRenderingContext2D) {
-        super.render(context);
+        let animationName = 'idle';
+
+        if (Math.abs(this.dx) > 0.01) {
+            animationName = 'run';
+        }
+
+        Aseprite.drawAnimation({
+            context,
+            image: imageName,
+            animationName,
+            time: this.animCount,
+            position: {x: this.midX, y: this.maxY},
+            scale: PHYSICS_SCALE,
+            anchorRatios: {x: 0.5, y: 1},
+            // filter: filter,
+            flippedX: this.facingDir == FacingDir.Left,
+        });
     }
 
     cameraFocus(): Point {
@@ -129,6 +148,10 @@ export class Robot extends Entity {
             action: RobotAction.MoveRight,
             data: tiles,
         });
+    }
+
+    static async preload() {
+        await Aseprite.loadImage({name: imageName, basePath: 'sprites'});
     }
 
 }
