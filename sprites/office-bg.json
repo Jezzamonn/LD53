@@ -1,0 +1,188 @@
+{ "frames": [
+   {
+    "filename": "office-bg 0.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 5000
+   },
+   {
+    "filename": "office-bg 1.aseprite",
+    "frame": { "x": 1, "y": 17, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 2.aseprite",
+    "frame": { "x": 1, "y": 33, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 3.aseprite",
+    "frame": { "x": 1, "y": 49, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 4.aseprite",
+    "frame": { "x": 33, "y": 1, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 500
+   },
+   {
+    "filename": "office-bg 5.aseprite",
+    "frame": { "x": 33, "y": 17, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 6.aseprite",
+    "frame": { "x": 33, "y": 33, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 7.aseprite",
+    "frame": { "x": 33, "y": 49, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 8.aseprite",
+    "frame": { "x": 65, "y": 1, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 500
+   },
+   {
+    "filename": "office-bg 9.aseprite",
+    "frame": { "x": 65, "y": 17, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 1000
+   },
+   {
+    "filename": "office-bg 10.aseprite",
+    "frame": { "x": 65, "y": 33, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 11.aseprite",
+    "frame": { "x": 65, "y": 49, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 1000
+   },
+   {
+    "filename": "office-bg 12.aseprite",
+    "frame": { "x": 97, "y": 1, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 300
+   },
+   {
+    "filename": "office-bg 13.aseprite",
+    "frame": { "x": 97, "y": 17, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 1000
+   },
+   {
+    "filename": "office-bg 14.aseprite",
+    "frame": { "x": 97, "y": 33, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 300
+   },
+   {
+    "filename": "office-bg 15.aseprite",
+    "frame": { "x": 97, "y": 49, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 1000
+   },
+   {
+    "filename": "office-bg 16.aseprite",
+    "frame": { "x": 129, "y": 1, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 300
+   },
+   {
+    "filename": "office-bg 17.aseprite",
+    "frame": { "x": 129, "y": 17, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   },
+   {
+    "filename": "office-bg 18.aseprite",
+    "frame": { "x": 129, "y": 33, "w": 32, "h": 16 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 16 },
+    "sourceSize": { "w": 32, "h": 16 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "office-bg.png",
+  "format": "RGBA8888",
+  "size": { "w": 162, "h": 66 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "watercooler", "from": 0, "to": 10, "direction": "forward" },
+   { "name": "worker", "from": 11, "to": 16, "direction": "forward" },
+   { "name": "empty-desk", "from": 17, "to": 17, "direction": "forward" },
+   { "name": "picture", "from": 18, "to": 18, "direction": "forward" }
+  ]
+ }
+}

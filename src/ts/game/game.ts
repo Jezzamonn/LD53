@@ -73,7 +73,7 @@ export class Game {
         if (this.levelIndex == 0) {
             return;
         }
-        this.startLevel(this.levelIndex + LEVELS.length - 1);
+        this.startLevel(this.levelIndex - 1);
     }
 
     startLevel(levelIndex: number, restart = false) {
@@ -234,6 +234,7 @@ export class Game {
             Sounds.loadSound({name: 'bell', path: 'sfx'}),
             Sounds.loadSound({name: 'boss', path: 'music/'}),
             KB.preload(),
+            Aseprite.loadImage({name: 'office-bg', basePath: 'sprites/'}),
         ]);
     }
 }

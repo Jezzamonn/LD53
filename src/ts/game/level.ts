@@ -16,6 +16,7 @@ import { Sounds } from "../lib/sounds";
 import { KingBox } from "./entity/kingbox";
 import { SFX } from "./sfx";
 import { KB } from "./KB";
+import { choose, seededRandom } from "../lib/util";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -125,6 +126,7 @@ export class Level {
         }
 
         this.tiles.baseLayer.fillInUnknownTiles();
+        this.fillWithOfficeStuff();
 
         this.tiles.baseLayer.allowGrow = true;
         this.tiles.objectLayer.allowGrow = true;
@@ -132,6 +134,70 @@ export class Level {
         this.camera.target = () => this.tiles.baseLayer.centerInPhysCoords;
 
         this.spawnPlayer();
+    }
+
+    fillWithOfficeStuff() {
+        // To keep things consistent.
+        const levelRng = seededRandom(this.levelInfo.name + "basdfsdfdsf");
+
+        const animationNames = [
+            'watercooler',
+            'worker',
+            'worker',
+            'worker',
+            'worker',
+            'worker',
+            'empty-desk',
+            'empty-desk',
+            'empty-desk',
+            'picture',
+            'picture',
+            '',
+            '',
+            '',
+            '',
+        ]
+
+        for (var y = this.tiles.baseLayer.minY; y <= this.tiles.baseLayer.maxY; y++) {
+            for (var x = this.tiles.baseLayer.minX; x <= this.tiles.baseLayer.maxX; x++) {
+                const thisTile = this.tiles.baseLayer.getTile({ x, y });
+                const objTile = this.tiles.objectLayer.getTile({ x, y });
+
+                if (thisTile != BaseTile.Background) {
+                    continue;
+                }
+                if (objTile != ObjectTile.Empty) {
+                    continue;
+                }
+
+                const belowTile = this.tiles.baseLayer.getTile({ x, y: y + 1 });
+
+                if (belowTile != BaseTile.Wall) {
+                    continue;
+                }
+
+                const animationName = choose(animationNames, levelRng);
+
+                if (animationName == '') {
+                    continue;
+                }
+
+                const basePos = this.tiles.getTileCoord({x, y}, { x: 0.5, y: 1 })
+
+                // Add a sprite
+                const sprite = new Sprite(this,
+                    {
+                        imageName: 'office-bg',
+                        animationName,
+                        anchorRatios: { x: 0.5, y: 1 },
+                    });
+                sprite.midX = basePos.x;
+                sprite.maxY = basePos.y;
+                sprite.animCount = levelRng() * 4;
+                // Sprites go at the back
+                this.entities.unshift(sprite);
+            }
+        }
     }
 
     logMessage() {
