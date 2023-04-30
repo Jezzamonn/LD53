@@ -2,10 +2,12 @@
 
 👑: Just kidding. Looks like you have a handy jump() function!
 
-👑: Another tip: You can put a semicolon between function calls to run more than one on the same line. For example:
+👑: Some bonus tips: You can put a semicolon between function calls to run more than one on the same line. For example:
 
 moveRight(2); jump()
 
 👑: You can put as many next to each other as yoy want! Like so:
 
 moveRight(2); jump(); moveLeft(2); jump()
+
+👑: Another tip: Ypu can press up on the arrow keys to repeat something you just typed! Useful for repeating things!
