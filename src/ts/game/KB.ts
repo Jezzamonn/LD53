@@ -11,6 +11,7 @@ export class KB {
         // Something extra.
         await Promise.all([
             this.loadDialog('unlock'),
+            this.loadDialog('win'),
         ]);
     }
 

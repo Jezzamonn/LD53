@@ -174,7 +174,7 @@ export class Robot extends Entity {
         this.dx = 0;
 
         this.chainedActions++;
-        this.speed = lerp(1, 4, clampInvLerp(this.chainedActions, 10, 30));
+        this.speed = lerp(1, 4, clampInvLerp(this.chainedActions, 10, 50));
     }
 
     checkForWin() {

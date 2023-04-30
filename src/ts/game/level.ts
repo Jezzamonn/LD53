@@ -186,9 +186,39 @@ export class Level {
             }
         }
 
+        this.levelSpecificUpdate(dt);
+
         this.background.update(dt);
         this.tiles.update(dt);
         this.camera.update(dt);
+    }
+
+    levelSpecificUpdate(dt: number) {
+        switch (this.levelInfo.name) {
+            case 'kingbox':
+                if (!this.won && this.noMoreTilesOnGround()) {
+                    this.won = true;
+                    this.destroyBuilding();
+                }
+                break;
+        }
+    }
+
+    noMoreTilesOnGround(): boolean {
+        for (var x = 0; x < this.tiles.baseLayer.maxX; x++) {
+            const tile = this.tiles.baseLayer.getTile({
+                x,
+                y: this.tiles.baseLayer.maxY - 1,
+            });
+            if (tile == BaseTile.Wall) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    destroyBuilding() {
+        KB.speak('win');
     }
 
     render(context: CanvasRenderingContext2D) {
