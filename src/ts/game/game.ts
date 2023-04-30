@@ -77,6 +77,8 @@ export class Game {
         const levelInfo = LEVELS[this.levelIndex];
         const level = new Level(this, levelInfo);
         level.initFromImage();
+        level.update(0);
+
         this.curLevel = level;
 
         if (levelInfo.song) {

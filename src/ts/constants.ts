@@ -7,7 +7,7 @@ export const TIME_STEP = 1 / FPS;
 
 export const PIXEL_SCALE = 4;
 
-export const GAME_WIDTH_PX = 150;
+export const GAME_WIDTH_PX = 200; // Quick way to make sure larger levels stay on the screen.
 export const GAME_HEIGHT_PX = 150;
 export const GAME_WIDTH = GAME_WIDTH_PX * PHYSICS_SCALE;
 export const GAME_HEIGHT = GAME_HEIGHT_PX * PHYSICS_SCALE;

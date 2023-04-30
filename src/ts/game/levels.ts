@@ -26,6 +26,7 @@ export const LEVELS: LevelInfo[] = [
     },
     {
         name: 'guard',
+        song: 'spy-normal',
     },
     {
         name: 'tall-stairs',
@@ -40,6 +41,10 @@ export const LEVELS: LevelInfo[] = [
     {
         name: 'snake',
     },
+    {
+        name: 'kingbox',
+        song: '',
+    },
 ];
 
 export class Levels {
@@ -49,7 +54,7 @@ export class Levels {
             promises.push(
                 Images.loadImage({name: level.name, path: 'level/', extension: 'gif'}),
             );
-            if (level.song && Sounds.audios[level.song] === undefined) {
+            if (level.song && level.song.length > 0 && Sounds.audios[level.song] === undefined) {
                 promises.push(
                     Sounds.loadSound({name: level.song, path: 'music/'}),
                 );

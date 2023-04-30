@@ -196,18 +196,10 @@ export class TileLayer<T extends number> implements TileSource<T> {
         return this.y + this.h - 1;
     }
 
-    get midX() {
-        return this.x + (this.w - 1) / 2;
-    }
-
-    get midY() {
-        return this.y + (this.h - 1) / 2;
-    }
-
     get centerInPhysCoords(): Point {
         return {
-            x: this.midX * TILE_SIZE,
-            y: this.midY * TILE_SIZE,
+            x: (this.w / 2 - this.x) * TILE_SIZE,
+            y: (this.h / 2 - this.y) * TILE_SIZE,
         };
     }
 }

@@ -135,6 +135,7 @@ class _Sounds {
         if (lastSong != null) {
             audio.playbackRate = lastSong.playbackRate;
 
+            // If the first 4 characters of the song name are the same, treat it like it's a variation of the same track.
             if (lastSongName?.slice(0, 4) == songName.slice(0, 4)) {
                 audio.currentTime = lastSong.currentTime;
             }

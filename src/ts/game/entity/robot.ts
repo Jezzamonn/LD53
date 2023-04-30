@@ -109,6 +109,13 @@ export class Robot extends Entity {
                 this.dx = 0;
         }
 
+        if (this.dx > 0.01) {
+            this.facingDir = FacingDir.Right;
+        }
+        else if (this.dx < -0.01) {
+            this.facingDir = FacingDir.Left;
+        }
+
         // Rest of the update stuff from super.update()
         this.applyGravity(dt);
         this.dampX(dt);
@@ -199,10 +206,13 @@ export class Robot extends Entity {
     }
 
     doEatingDestruction() {
+        // TODO: Maybe only play explosion when actually destroying something?
         SFX.play('explode');
-        // TODO: Figure out how this works with the sky and such.
         const destructCoord = {x: this.midX + this.facingDirMult * TILE_SIZE, y: this.midY};
-        this.level.tiles.baseLayer.setTileAtCoord(destructCoord, BaseTile.Background);
+        const baseTile = this.level.tiles.baseLayer.getTileAtCoord(destructCoord);
+        if (baseTile != BaseTile.Outside) {
+            this.level.tiles.baseLayer.setTileAtCoord(destructCoord, BaseTile.Background);
+        }
         this.level.tiles.objectLayer.setTileAtCoord(destructCoord, ObjectTile.Empty);
     }
 

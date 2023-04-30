@@ -99,6 +99,10 @@ export class Level {
                         guard.maxY = basePos.y;
                         this.entities.push(guard);
                         break;
+                    case 'ff9900':
+                        // Locked box with kingbox inside.
+                        this.tiles.objectLayer.setTile({ x, y }, ObjectTile.LockedBox);
+                        break;
                     default:
                         console.log(`Unknown color: ${color} at ${x}, ${y}.`);
                         break;
@@ -133,6 +137,11 @@ export class Level {
         robot.midX = this.spawn.x;
         robot.maxY = this.spawn.y;
         this.entities.push(robot);
+
+        // If the level is large, focus on the robot instead of the center.
+        if (this.tiles.baseLayer.w > 15) {
+            this.camera.target = () => robot.cameraFocus();
+        }
 
         robot.exportActionsToGlobal();
     }
