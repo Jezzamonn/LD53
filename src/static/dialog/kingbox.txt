@@ -1,3 +1,3 @@
 👑: Finally! You've made it to the top!
 
-👑: Quick, move to the front of that locked box and run the open() function.
+👑: Quick, move to the front of that locked chest and run the open() function.
