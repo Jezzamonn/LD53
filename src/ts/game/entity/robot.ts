@@ -2,6 +2,7 @@ import { FacingDir, Point } from "../../common";
 import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
 import { Sounds } from "../../lib/sounds";
+import { clamp, clampInvLerp, experp, invLerp } from "../../lib/util";
 import { Level } from "../level";
 import { SFX } from "../sfx";
 import { BaseTile } from "../tile/base-layer";
@@ -35,6 +36,8 @@ export class Robot extends Entity {
 
     imageName = "box";
     emoji = "📦";
+    speed = 1;
+    chainedActions = 0;
 
     constructor(level: Level) {
         super(level);
@@ -44,6 +47,8 @@ export class Robot extends Entity {
     }
 
     update(dt) {
+        dt *= this.speed;
+
         const animationName = this.getAnimationName();
 
         const prevAnimCount = this.animCount;
@@ -79,6 +84,8 @@ export class Robot extends Entity {
                 }
             } else {
                 this.checkForWin();
+                this.chainedActions = 0;
+                this.speed = 1;
             }
         }
 
@@ -166,7 +173,8 @@ export class Robot extends Entity {
         this.currentAction = undefined;
         this.dx = 0;
 
-        // Quick hardcoded thing to play a message a function is first called on the first level.
+        this.chainedActions++;
+        this.speed = experp(1, 8, clampInvLerp(this.chainedActions, 10, 50))
     }
 
     checkForWin() {
