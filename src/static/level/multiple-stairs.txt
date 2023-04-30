@@ -1,0 +1,10 @@
+👑: Another long hallway with stairs. Looks like each stair is exactly 2 tiles apart.
+
+👑: If you're feeling clever, you could try using a loop here! You can put multiple functions inside the curly-braces of the loop, like this:
+
+for (var i = 0; i < 3; i++) {
+    jump()
+    moveLeft(2)
+}
+
+👑: That example doesn't look right for this hallway though. Can you change it to work here?

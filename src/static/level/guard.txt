@@ -1,0 +1,3 @@
+👑: A guard! As long as he doesn't see you move, he should walk past you.
+
+👑: Use the moveRight() function as before, just make sure you time it correctly!

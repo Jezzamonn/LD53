@@ -19,7 +19,7 @@
       "patterns": [
         "src/static/**"
       ],
-      "extensions": "html,css,png,gif,mp3,ttf"
+      "extensions": "html,css,png,gif,mp3,ttf,txt"
     },
     "sprites": {
       "patterns": [

@@ -12,8 +12,8 @@ export enum MuteState {
     ALL_OFF = 2,
 }
 
-// Playing at 1 volume is too loud.
-const VOLUME_MULTIPLE = 0.5;
+const VOLUME_MULTIPLE = 1;
+const SFX_MULTIPLE = 0.25 * VOLUME_MULTIPLE;
 
 class _Sounds {
     audios: {[key: string]: SoundInfo} = {};
@@ -83,7 +83,7 @@ class _Sounds {
         // TODO: Adjust SFX volumes, probably just here.
 
 
-        audio.volume *= this.volume * volume;
+        audio.volume *= this.volume * volume * SFX_MULTIPLE;
 
         audio.playbackRate = this.playbackRate;
 

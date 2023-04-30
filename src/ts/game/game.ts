@@ -17,7 +17,7 @@ export class Game {
     canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
 
-    scale = 1;
+    scale = 4;
 
     simulatedTimeMs: number | undefined;
 
@@ -27,6 +27,10 @@ export class Game {
 
     keys: RegularKeys;
     nullKeys = new NullKeys();
+
+    gameState = {
+        hasCalledMoveRight: false,
+    };
 
     constructor(canvasSelector: string) {
         const canvas = document.querySelector<HTMLCanvasElement>(canvasSelector);
@@ -56,7 +60,7 @@ export class Game {
 
         this.doAnimationLoop();
 
-        this.startLevel(0);
+        this.startLevel(Levels.getSavedLevelIndex());
     }
 
     nextLevel() {
@@ -67,16 +71,26 @@ export class Game {
         this.startLevel((this.levelIndex + LEVELS.length - 1) % LEVELS.length);
     }
 
-    startLevel(levelIndex: number) {
+    startLevel(levelIndex: number, restart = false) {
         this.levelIndex = levelIndex;
         const levelInfo = LEVELS[this.levelIndex];
         const level = new Level(this, levelInfo);
         level.initFromImage();
         this.curLevel = level;
 
-        // if (levelInfo.song) {
-        //     Sounds.setSong(levelInfo.song);
-        // }
+        if (levelInfo.song) {
+            Sounds.setSong(levelInfo.song);
+        }
+
+        if (!restart) {
+            level.logMessage();
+        }
+
+        Levels.saveLevel(levelInfo);
+    }
+
+    restart() {
+        this.startLevel(this.levelIndex, true);
     }
 
     win() {
@@ -128,10 +142,6 @@ export class Game {
         if (this.keys.anyWasPressedThisFrame(RESTART_KEYS)) {
             this.restart();
         }
-    }
-
-    restart() {
-        this.startLevel(this.levelIndex);
     }
 
     update(dt: number) {

@@ -12,6 +12,7 @@ import { BaseTile } from "./tile/base-layer";
 import { ObjectTile } from "./tile/object-layer";
 import { Robot } from "./entity/robot";
 import { Guard } from "./entity/guard";
+import { Sounds } from "../lib/sounds";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -25,7 +26,7 @@ export class Level {
 
     tiles: Tiles = new Tiles(0, 0);
 
-    start: Point = { x: 0, y: 0 };
+    spawn: Point = { x: 0, y: 0 };
 
     won = false;
 
@@ -87,7 +88,7 @@ export class Level {
                         this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal);
                         break;
                     case 'ff0000':
-                        this.start = basePos;
+                        this.spawn = basePos;
                         this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn);
                         break;
                     case 'aa0000':
@@ -101,6 +102,10 @@ export class Level {
                         console.log(`Unknown color: ${color} at ${x}, ${y}.`);
                         break;
                 }
+
+                if (this.levelInfo.spawn && this.levelInfo.spawn.x == x && this.levelInfo.spawn.y == y) {
+                    this.spawn = basePos;
+                }
             }
         }
         this.tiles.baseLayer.fillInUnknownTiles();
@@ -108,8 +113,6 @@ export class Level {
         this.camera.target = () => this.tiles.baseLayer.centerInPhysCoords;
 
         this.spawnPlayer();
-
-        this.logMessage();
     }
 
     logMessage() {
@@ -122,8 +125,8 @@ export class Level {
 
     spawnPlayer() {
         const robot = new Robot(this);
-        robot.midX = this.start.x;
-        robot.maxY = this.start.y;
+        robot.midX = this.spawn.x;
+        robot.maxY = this.spawn.y;
         this.entities.push(robot);
 
         robot.exportActionsToGlobal();

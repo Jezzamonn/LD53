@@ -77,10 +77,8 @@ export class Guard extends Entity {
         if (this.robotIsInRange(robot)) {
             this.foundRobot = true;
             this.level.lose();
+            return;
         }
-
-        // We found it! Now... lose the level?
-        this.level.lose();
     }
 
     robotIsInRange(robot: Robot): boolean {

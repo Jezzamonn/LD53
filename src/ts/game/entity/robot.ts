@@ -102,9 +102,19 @@ export class Robot extends Entity {
 
 
     finishAction() {
+        if (this.currentAction?.action == RobotAction.MoveRight &&
+            this.level.levelInfo.name == "lobby" &&
+            !this.level.game.gameState.hasCalledMoveRight) {
+            this.level.game.gameState.hasCalledMoveRight = true;
+            console.log('👑: Good job! Try calling it again to make it to the elevator.')
+        }
+
         this.currentAction?.resolve();
         this.currentAction = undefined;
         this.dx = 0;
+
+        // Quick hardcoded thing to play a message a function is first called on the first level.
+
     }
 
     checkForWin() {
@@ -149,6 +159,7 @@ export class Robot extends Entity {
      */
     startMoveLeft(amount: number) {
         this.desiredMidX = this.midX - TILE_SIZE * amount;
+        console.log('📦: Moving Left!');
     }
 
     /**
@@ -158,6 +169,7 @@ export class Robot extends Entity {
      */
     startMoveRight(amount: number) {
         this.desiredMidX = this.midX + TILE_SIZE * amount;
+        console.log('📦: Moving Right!');
     }
 
     queueAction(action: RobotAction, data: any = undefined): Promise<void> {
@@ -172,6 +184,9 @@ export class Robot extends Entity {
 
     startJump() {
         this.dy = -this.jumpSpeed;
+        SFX.play('jump');
+
+        console.log('📦: Jumping!');
     }
 
     render(context: CanvasRenderingContext2D) {
@@ -197,15 +212,18 @@ export class Robot extends Entity {
     exportActionsToGlobal() {
         (window as any).moveLeft = (tiles: number) => {
             // Hello! If you're seeing this message, you typed "moveLeft" without adding the parentheses at the end. To call the function, type "moveLeft()".
-            this.queueAction(RobotAction.MoveLeft, tiles);
+            return this.queueAction(RobotAction.MoveLeft, tiles);
         };
         (window as any).moveRight = (tiles: number) => {
             // Hello! If you're seeing this message, you typed "moveRight" without adding the parentheses at the end. To call the function, type "moveRight()".
-            this.queueAction(RobotAction.MoveRight, tiles);
+            return this.queueAction(RobotAction.MoveRight, tiles);
         }
-        (window as any).jump = () => {
+        (window as any).jump = (argument: any) => {
             // Hello! If you're seeing this message, you typed "jump" without adding the parentheses at the end. To call the function, type "jump()".
-            this.queueAction(RobotAction.Jump);
+            if (argument !== undefined) {
+                console.warn("📦: Warning: jump() does not take any arguments. I will just jump once.");
+            }
+            return this.queueAction(RobotAction.Jump);
         }
     }
 
