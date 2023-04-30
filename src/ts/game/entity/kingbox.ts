@@ -16,7 +16,7 @@ export class KingBox extends Robot {
 
     exportActionsToGlobal(): void {
         super.exportActionsToGlobal();
-        (window as any).eat = (argument: any) => {
+        (window as any).destroy = (argument: any) => {
             // Hello! If you're seeing this message, you typed "destroy" without adding the parentheses at the end. To call the function, type "destroy()".
             if (argument !== undefined) {
                 console.warn(`${this.emoji}: Warning: destroy() does not take any arguments. I will destroy only once.`);

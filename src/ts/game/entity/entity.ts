@@ -152,8 +152,16 @@ export class Entity {
     }
 
     isStanding(): boolean {
-        return this.isTouchingTile(this.level.tiles, [PhysicTile.Wall, PhysicTile.OneWayPlatform], { dir: Dir.Down, offset: { x: 0, y: 1 } }) &&
-            !this.isTouchingTile(this.level.tiles, PhysicTile.OneWayPlatform, { dir: Dir.Down })
+        const maxYTileIndex = Math.floor(this.maxY / TILE_SIZE);
+        const tileBelowIndex = Math.floor((this.maxY + 1) / TILE_SIZE);
+
+        return (
+            this.isTouchingTile(
+                this.level.tiles,
+                [PhysicTile.Wall, PhysicTile.OneWayPlatform],
+                { dir: Dir.Down, offset: { x: 0, y: 1 } }
+            ) && maxYTileIndex != tileBelowIndex
+        );
     }
 
     isTouchingEntity(other: Entity): boolean {

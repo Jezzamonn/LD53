@@ -2,7 +2,7 @@ import { FacingDir, Point } from "../../common";
 import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
 import { Sounds } from "../../lib/sounds";
-import { clamp, clampInvLerp, experp, invLerp } from "../../lib/util";
+import { clamp, clampInvLerp, experp, invLerp, lerp } from "../../lib/util";
 import { Level } from "../level";
 import { SFX } from "../sfx";
 import { BaseTile } from "../tile/base-layer";
@@ -174,7 +174,7 @@ export class Robot extends Entity {
         this.dx = 0;
 
         this.chainedActions++;
-        this.speed = experp(1, 8, clampInvLerp(this.chainedActions, 10, 50))
+        this.speed = lerp(1, 4, clampInvLerp(this.chainedActions, 10, 30));
     }
 
     checkForWin() {
@@ -220,8 +220,9 @@ export class Robot extends Entity {
         const objectTile = this.level.tiles.objectLayer.getTileAtCoord(coord);
         if (objectTile != ObjectTile.LockedBox) {
             console.error(
-                `${this.emoji}: Nothing to open! Try moving in front of the box`
+                `${this.emoji}: Nothing to open! Try moving directly in front of the chest.`
             );
+            this.finishAction();
             return;
         }
 
