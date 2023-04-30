@@ -75,7 +75,7 @@ export class Levels {
     static fillSongsForward() {
         var song: string | undefined;
         for (const level of LEVELS) {
-            if (level.song) {
+            if (level.song != undefined) {
                 song = level.song;
             } else {
                 level.song = song;

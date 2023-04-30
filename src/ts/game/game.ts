@@ -57,9 +57,6 @@ export class Game {
         this.resize();
         window.addEventListener('resize', () => this.resize());
 
-        // Whenever any touch event happens, try to enter fullscreen.
-        window.addEventListener('touchstart', () => this.enterFullscreen());
-
         this.doAnimationLoop();
 
         this.startLevel(Levels.getSavedLevelIndex());
@@ -88,6 +85,14 @@ export class Game {
 
         if (!restart) {
             level.logMessage();
+        }
+
+        const instructionsElem = document.querySelector(".instructions");
+        if (levelInfo.name == 'lobby') {
+            instructionsElem?.classList.remove("hidden");
+        }
+        else {
+            instructionsElem?.classList.add("hidden");
         }
 
         Levels.saveLevel(levelInfo);
@@ -205,16 +210,10 @@ export class Game {
         document.body.style.setProperty('--pageHeight', `${windowHeight}px`);
     }
 
-    enterFullscreen() {
-        // If we're already fullscreen, don't do anything.
-        if (document.fullscreenElement) {
-            return;
-        }
-
-        const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        }
+    exportActionsToGlobal() {
+        window['restart'] = () => this.restart();
+        window['skipToEnd'] = () => this.startLevel(LEVELS.length - 1);
+        window['mute'] = () => Sounds.toggleMute();
     }
 
     static async preload() {
@@ -229,6 +228,5 @@ export class Game {
             Sounds.loadSound({name: 'boss', path: 'music/'}),
             KB.preload(),
         ]);
-        SFX.preload();
     }
 }

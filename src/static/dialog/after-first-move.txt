@@ -1,0 +1,9 @@
+👑: Good job!
+
+👑: Here are some other functions you can call to control the game:
+
+• mute() - Switch between playing music and sound effects, only sound effects, or no sound.
+• restart() - Restarts a level.
+• skipToEnd() - For Ludum Dare players: Skips all the way to the last level! Use this to make sure you try the ending before you rate the game. But preferably play through the game instead!
+
+👑: But anyway, we need to get to the elevator. Try calling moveRight() again to move to the elevator.

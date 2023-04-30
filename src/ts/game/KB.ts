@@ -12,6 +12,7 @@ export class KB {
         await Promise.all([
             this.loadDialog('unlock'),
             this.loadDialog('win'),
+            this.loadDialog('after-first-move'),
         ]);
     }
 

@@ -3,6 +3,7 @@ import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
 import { Sounds } from "../../lib/sounds";
 import { clamp, clampInvLerp, experp, invLerp, lerp } from "../../lib/util";
+import { KB } from "../KB";
 import { Level } from "../level";
 import { SFX } from "../sfx";
 import { BaseTile } from "../tile/base-layer";
@@ -164,9 +165,7 @@ export class Robot extends Entity {
             !this.level.game.gameState.hasCalledMoveRight
         ) {
             this.level.game.gameState.hasCalledMoveRight = true;
-            console.log(
-                "👑: Good job! Try calling it again to make it to the elevator."
-            );
+            KB.speak('after-first-move');
         }
 
         this.currentAction?.resolve();

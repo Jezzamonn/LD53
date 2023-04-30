@@ -1,4 +1,5 @@
 import { Game } from "./game/game";
+import { SFX } from "./game/sfx";
 
 async function init() {
     await Game.preload()
@@ -12,6 +13,9 @@ function hideTitle() {
 
     const instructions = document.querySelector('.instructions') as HTMLElement;
     instructions.classList.remove('hidden');
+
+    // Only do this after click to prevent the error message that otherwise appears.
+    SFX.preload();
 
     window.removeEventListener('click', hideTitle);
 
