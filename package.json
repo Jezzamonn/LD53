@@ -47,7 +47,7 @@
     }
   },
   "author": "Jezzamon",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "devDependencies": {
     "@babel/cli": "^7.20.7",
     "@babel/core": "^7.20.12",
