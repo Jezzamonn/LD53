@@ -3,8 +3,13 @@
     src: url('../font/ChevyRay - Stapler.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: 'Picory';
+    src: url('../font/ChevyRay - Picory.ttf') format('truetype');
+}
+
 html, body {
-    font-family: 'Stapler', sans-serif;
+    font-family: 'Picory', sans-serif;
 
     margin: 0;
     overflow: hidden;
@@ -19,6 +24,16 @@ body {
     --scale: 1;
     --pageHeight: 100vh;
     --pageWidth: 100vw;
+}
+
+// Make link text a little lighter
+a {
+    color: #5c7aff;
+}
+
+// Also for visited links
+a:visited {
+    color: #ca95ff;
 }
 
 .content {
@@ -44,6 +59,8 @@ body {
     align-items: stretch;
 
     background: repeat url('../sprites/title-bg.png');
+
+    font-family: 'Stapler', sans-serif;
 }
 
 .title h1 {
@@ -57,6 +74,26 @@ body {
 .title-box {
     flex-grow: 1;
     background: no-repeat center/contain url('../sprites/title-box.png');
+}
+
+.instructions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--pageWidth);
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.3);
+
+    font-size: 32px;
+}
+
+.instructions p {
+    max-width: 800px;
 }
 
 .hidden {
