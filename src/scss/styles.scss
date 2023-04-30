@@ -1,9 +1,18 @@
+@font-face {
+    font-family: 'Stapler';
+    src: url('../font/ChevyRay - Stapler.ttf') format('truetype');
+}
+
 html, body {
+    font-family: 'Stapler', sans-serif;
+
     margin: 0;
     overflow: hidden;
 
     background-color: black;
     color: white;
+
+    text-align: center;
 }
 
 body {
@@ -21,53 +30,33 @@ body {
     overflow: hidden;
 }
 
-.touch-buttons {
+.title {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
-}
-
-.touch-button-image {
-    width: 100%;
-
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-}
-
-.touch-button {
-    position: absolute;
-    width: 20vmin;
-    height: 20vmin;
+    height: var(--pageHeight);
+    width: var(--pageWidth);
+    overflow: hidden;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
 
-    border: none;
-    padding: 0;
-    margin: 0;
-    text-decoration: none;
-    background: none;
-    color: inherit;
+    background: repeat url('../sprites/title-bg.png');
 }
 
-.touch-button-left-right {
-    bottom: 0;
-    left: 0;
-    width: 40vmin;
+.title h1 {
+    font-size: calc(var(--pageHeight) * 0.1);
 }
 
-.touch-button-jump {
-    bottom: 0;
-    right: 0;
+.title p {
+    font-size: calc(var(--pageHeight) * 0.05);
 }
 
-.touch-button-restart {
-    top: 0;
-    right: 0;
+.title-box {
+    flex-grow: 1;
+    background: no-repeat center/contain url('../sprites/title-box.png');
 }
 
 .hidden {
