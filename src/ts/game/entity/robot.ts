@@ -15,6 +15,7 @@ export enum RobotAction {
 interface RobotActionData {
     action: RobotAction;
     data?: any;
+    resolve: () => void;
 }
 
 const imageName = 'box';
@@ -22,7 +23,7 @@ const imageName = 'box';
 export class Robot extends Entity {
     queuedActions: RobotActionData[] = [];
 
-    currentAction: RobotAction | undefined;
+    currentAction: RobotActionData | undefined;
 
     moveSpeed = 1.5 * PHYSICS_SCALE * FPS;
     jumpSpeed = 3.5 * PHYSICS_SCALE * FPS;
@@ -42,14 +43,13 @@ export class Robot extends Entity {
 
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
-                const { action, data } = this.queuedActions.shift()!;
-                this.currentAction = action;
-                switch (this.currentAction) {
+                this.currentAction = this.queuedActions.shift()!;
+                switch (this.currentAction.action) {
                     case RobotAction.MoveLeft:
-                        this.startMoveLeft(data ?? 1);
+                        this.startMoveLeft(this.currentAction.data ?? 1);
                         break;
                     case RobotAction.MoveRight:
-                        this.startMoveRight(data ?? 1);
+                        this.startMoveRight(this.currentAction.data ?? 1);
                         break;
                     case RobotAction.Jump:
                         this.startJump();
@@ -60,7 +60,7 @@ export class Robot extends Entity {
             }
         }
 
-        switch (this.currentAction) {
+        switch (this.currentAction?.action) {
             case RobotAction.MoveLeft:
                 this.dx = -this.moveSpeed;
                 if (this.midX <= this.desiredMidX) {
@@ -102,6 +102,7 @@ export class Robot extends Entity {
 
 
     finishAction() {
+        this.currentAction?.resolve();
         this.currentAction = undefined;
         this.dx = 0;
     }
@@ -117,8 +118,8 @@ export class Robot extends Entity {
     onLeftCollision(): void {
         super.onLeftCollision();
         if (
-            this.currentAction == RobotAction.MoveLeft ||
-            this.currentAction == RobotAction.MoveRight
+            this.currentAction?.action == RobotAction.MoveLeft ||
+            this.currentAction?.action == RobotAction.MoveRight
         ) {
             this.finishAction();
         }
@@ -127,8 +128,8 @@ export class Robot extends Entity {
     onRightCollision(): void {
         super.onRightCollision();
         if (
-            this.currentAction == RobotAction.MoveLeft ||
-            this.currentAction == RobotAction.MoveRight
+            this.currentAction?.action == RobotAction.MoveLeft ||
+            this.currentAction?.action == RobotAction.MoveRight
         ) {
             this.finishAction();
         }
@@ -136,7 +137,7 @@ export class Robot extends Entity {
 
     onDownCollision() {
         super.onDownCollision();
-        if (this.currentAction == RobotAction.Jump) {
+        if (this.currentAction?.action == RobotAction.Jump) {
             this.finishAction();
         }
     }
@@ -157,6 +158,16 @@ export class Robot extends Entity {
      */
     startMoveRight(amount: number) {
         this.desiredMidX = this.midX + TILE_SIZE * amount;
+    }
+
+    queueAction(action: RobotAction, data: any = undefined): Promise<void> {
+        return new Promise<void>((resolve) => {
+            this.queuedActions.push({
+                action,
+                data,
+                resolve,
+            });
+        });
     }
 
     startJump() {
@@ -185,25 +196,17 @@ export class Robot extends Entity {
 
     exportActionsToGlobal() {
         (window as any).moveLeft = (tiles: number) => {
-            this.queuedActions.push({
-                action: RobotAction.MoveLeft,
-                data: tiles,
-            });
-            return "📦 Moving left!"
+            // Hello! If you're seeing this message, you typed "moveLeft" without adding the parentheses at the end. To call the function, type "moveLeft()".
+            this.queueAction(RobotAction.MoveLeft, tiles);
         };
         (window as any).moveRight = (tiles: number) => {
-            this.queuedActions.push({
-                action: RobotAction.MoveRight,
-                data: tiles,
-            });
-            return "📦 Moving right!"
-        };
+            // Hello! If you're seeing this message, you typed "moveRight" without adding the parentheses at the end. To call the function, type "moveRight()".
+            this.queueAction(RobotAction.MoveRight, tiles);
+        }
         (window as any).jump = () => {
-            this.queuedActions.push({
-                action: RobotAction.Jump,
-            });
-            return "📦 Jumping!"
-        };
+            // Hello! If you're seeing this message, you typed "jump" without adding the parentheses at the end. To call the function, type "jump()".
+            this.queueAction(RobotAction.Jump);
+        }
     }
 
     static async preload() {
