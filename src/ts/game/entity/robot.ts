@@ -62,14 +62,14 @@ export class Robot extends Entity {
                 this.dx = -this.moveSpeed;
                 if (this.midX <= this.desiredMidX) {
                     this.midX = this.desiredMidX;
-                    this.currentAction = undefined;
+                    this.finishAction();
                 }
                 break;
             case RobotAction.MoveRight:
                 this.dx = this.moveSpeed;
                 if (this.midX >= this.desiredMidX) {
                     this.midX = this.desiredMidX;
-                    this.currentAction = undefined;
+                    this.finishAction();
                 }
                 break;
             default:
@@ -77,6 +77,10 @@ export class Robot extends Entity {
         }
 
         super.update(dt);
+    }
+
+    finishAction() {
+        this.currentAction = undefined;
     }
 
     checkForWin() {
@@ -93,7 +97,7 @@ export class Robot extends Entity {
             this.currentAction == RobotAction.MoveLeft ||
             this.currentAction == RobotAction.MoveRight
         ) {
-            this.currentAction = undefined;
+            this.finishAction();
         }
     }
 
@@ -103,14 +107,14 @@ export class Robot extends Entity {
             this.currentAction == RobotAction.MoveLeft ||
             this.currentAction == RobotAction.MoveRight
         ) {
-            this.currentAction = undefined;
+            this.finishAction();
         }
     }
 
     onDownCollision() {
         super.onDownCollision();
         if (this.currentAction == RobotAction.Jump) {
-            this.currentAction = undefined;
+            this.finishAction();
         }
     }
 
@@ -166,17 +170,20 @@ export class Robot extends Entity {
                 action: RobotAction.MoveLeft,
                 data: tiles,
             });
+            return "📦 Moving left!"
         };
         (window as any).moveRight = (tiles: number) => {
             this.queuedActions.push({
                 action: RobotAction.MoveRight,
                 data: tiles,
             });
+            return "📦 Moving right!"
         };
         (window as any).jump = () => {
             this.queuedActions.push({
                 action: RobotAction.Jump,
             });
+            return "📦 Jumping!"
         };
     }
 

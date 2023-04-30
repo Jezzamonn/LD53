@@ -11,6 +11,7 @@ import { Background } from "./background";
 import { BaseTile } from "./tile/base-layer";
 import { ObjectTile } from "./tile/object-layer";
 import { Robot } from "./entity/robot";
+import { Guard } from "./entity/guard";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -60,9 +61,11 @@ export class Level {
 
                 const color = pixelToColorString(imageData, x, y);
 
+                this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+
                 switch (color) {
                     case 'ffffff':
-                        // Don't need to do anything for sky tiles as they're the default.
+                        this.tiles.baseLayer.setTile({x, y}, BaseTile.Outside);
                         break;
                     case '000000':
                         this.tiles.baseLayer.setTile({ x, y }, BaseTile.Ground);
@@ -71,22 +74,28 @@ export class Level {
                         this.tiles.baseLayer.setTile({ x, y }, BaseTile.Wall);
                         break;
                     case '5a6988':
-                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
+                        // Don't need to do anything for background tiles as THEY'RE the default.
+                        // this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
                         break;
                     case '262b44':
                         this.tiles.baseLayer.setTile({ x, y }, BaseTile.Darkness);
                         break;
+                    case '0000ff':
+                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Stairs);
+                        break;
                     case 'ffff00':
                         this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Goal);
-                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
                         break;
                     case 'ff0000':
                         this.start = basePos;
                         this.tiles.objectLayer.setTile({ x, y }, ObjectTile.Spawn);
-                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Background);
                         break;
-                    case '0000ff':
-                        this.tiles.baseLayer.setTile({ x, y }, BaseTile.Stairs);
+                    case 'aa0000':
+                        // Add a guard.
+                        const guard = new Guard(this);
+                        guard.midX = basePos.x;
+                        guard.maxY = basePos.y;
+                        this.entities.push(guard);
                         break;
                     default:
                         console.log(`Unknown color: ${color} at ${x}, ${y}.`);
@@ -96,7 +105,7 @@ export class Level {
         }
         this.tiles.baseLayer.fillInUnknownTiles();
 
-        this.camera.target = () => ({x: this.start.x, y: this.start.y});
+        this.camera.target = () => this.tiles.baseLayer.centerInPhysCoords;
 
         this.spawnPlayer();
     }
@@ -106,8 +115,6 @@ export class Level {
         robot.midX = this.start.x;
         robot.maxY = this.start.y;
         this.entities.push(robot);
-
-        this.camera.target = () => robot.cameraFocus();
 
         robot.exportActionsToGlobal();
     }
@@ -140,10 +147,19 @@ export class Level {
         }
     }
 
+    getEntitiesOfType<T extends Entity>(clazz: new (...args: any[]) => T): T[] {
+        return this.entities.filter((ent) => ent instanceof clazz) as T[];
+    }
+
     win() {
         this.won = true;
         this.game.win();
     }
+
+    lose() {
+        this.game.lose();
+    }
+
 }
 
 function pixelToColorString(imageData: ImageData, x: number, y: number) {

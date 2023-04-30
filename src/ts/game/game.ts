@@ -10,6 +10,7 @@ import { SFX } from "./sfx";
 import { Tiles } from "./tile/tiles";
 import { Background } from "./background";
 import { Robot } from "./entity/robot";
+import { Guard } from "./entity/guard";
 
 export class Game {
 
@@ -79,7 +80,13 @@ export class Game {
     }
 
     win() {
+        Sounds.playSound('bell');
         this.nextLevel();
+    }
+
+    lose() {
+        SFX.play('alert');
+        this.restart();
     }
 
     doAnimationLoop() {
@@ -119,8 +126,12 @@ export class Game {
             this.nextLevel();
         }
         if (this.keys.anyWasPressedThisFrame(RESTART_KEYS)) {
-            this.startLevel(this.levelIndex);
+            this.restart();
         }
+    }
+
+    restart() {
+        this.startLevel(this.levelIndex);
     }
 
     update(dt: number) {
@@ -197,7 +208,9 @@ export class Game {
             Levels.preload(),
             Tiles.preload(),
             Robot.preload(),
+            Guard.preload(),
             Background.preload(),
+            Sounds.loadSound({name: 'bell', path: 'sfx'})
         ]);
         SFX.preload();
     }

@@ -42,7 +42,7 @@ export class FocusCamera extends Camera {
     }
 }
 
-const screenPos: Point = { x: 0.5, y: 0.6 };
+const screenPos: Point = { x: 0.5, y: 0.5 };
 
 export function centerCanvas(context: CanvasRenderingContext2D) {
     context.translate(

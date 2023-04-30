@@ -9,17 +9,23 @@ export interface LevelInfo {
 
 export const LEVELS: LevelInfo[] = [
     {
-        name: 'level4',
+        name: 'guard',
     },
     {
-        name: 'level2',
+        name: 'lobby',
     },
     {
-        name: 'level3',
+        name: 'hall',
     },
-    // {
-    //     name: 'level4',
-    // },
+    {
+        name: 'single-stair',
+    },
+    {
+        name: 'tall-stairs',
+    },
+    {
+        name: 'hallway-with-stairs',
+    },
 ];
 
 export class Levels {

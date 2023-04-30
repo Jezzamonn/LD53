@@ -195,4 +195,19 @@ export class TileLayer<T extends number> implements TileSource<T> {
     get maxY() {
         return this.y + this.h - 1;
     }
+
+    get midX() {
+        return this.x + (this.w - 1) / 2;
+    }
+
+    get midY() {
+        return this.y + (this.h - 1) / 2;
+    }
+
+    get centerInPhysCoords(): Point {
+        return {
+            x: this.midX * TILE_SIZE,
+            y: this.midY * TILE_SIZE,
+        };
+    }
 }
