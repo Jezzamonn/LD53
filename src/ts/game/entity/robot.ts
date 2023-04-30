@@ -2,6 +2,7 @@ import { FacingDir, Point } from "../../common";
 import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
 import { Level } from "../level";
+import { SFX } from "../sfx";
 import { ObjectTile } from "../tile/object-layer";
 import { Entity } from "./entity"
 
@@ -37,6 +38,8 @@ export class Robot extends Entity {
     }
 
     update(dt) {
+        const prevAnimCount = this.animCount;
+
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
                 const { action, data } = this.queuedActions.shift()!;
@@ -77,10 +80,30 @@ export class Robot extends Entity {
         }
 
         super.update(dt);
+
+        // Play a sound depending on the frame of the animation.
+        const animationName = this.getAnimationName();
+        if (animationName == 'run') {
+            const prevFrame = Aseprite.getFrame(imageName, animationName, prevAnimCount);
+            const curFrame = Aseprite.getFrame(imageName, animationName, this.animCount);
+
+            if (prevFrame != curFrame && curFrame == 5) {
+                SFX.play('step');
+            }
+        }
     }
+
+    getAnimationName(): string {
+        if (Math.abs(this.dx) > 0.01) {
+            return "run";
+        }
+        return 'idle';
+    }
+
 
     finishAction() {
         this.currentAction = undefined;
+        this.dx = 0;
     }
 
     checkForWin() {
@@ -141,11 +164,7 @@ export class Robot extends Entity {
     }
 
     render(context: CanvasRenderingContext2D) {
-        let animationName = "idle";
-
-        if (Math.abs(this.dx) > 0.01) {
-            animationName = "run";
-        }
+        let animationName = this.getAnimationName();
 
         Aseprite.drawAnimation({
             context,

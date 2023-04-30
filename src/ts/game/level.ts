@@ -108,6 +108,16 @@ export class Level {
         this.camera.target = () => this.tiles.baseLayer.centerInPhysCoords;
 
         this.spawnPlayer();
+
+        this.logMessage();
+    }
+
+    logMessage() {
+        const message = this.levelInfo.message;
+        if (!message) {
+            return;
+        }
+        console.log(message);
     }
 
     spawnPlayer() {

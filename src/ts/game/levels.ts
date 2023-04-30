@@ -4,21 +4,24 @@ import { Sounds } from "../lib/sounds";
 export interface LevelInfo {
     name: string;
     song?: string;
+    message?: string;
 }
 
 
 export const LEVELS: LevelInfo[] = [
     {
-        name: 'guard',
-    },
-    {
         name: 'lobby',
+        song: 'spy-basic',
+        message: "Hey there! Welcome to the developer console."
     },
     {
         name: 'hall',
     },
     {
         name: 'single-stair',
+    },
+    {
+        name: 'guard',
     },
     {
         name: 'tall-stairs',
