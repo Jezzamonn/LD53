@@ -1,35 +1,11 @@
 import { Point } from "../common";
-import { physFromPx, PHYSICS_SCALE } from "../constants";
+import { FPS, physFromPx, PHYSICS_SCALE, rng, TILE_SIZE, visualRng } from "../constants";
 import { Aseprite } from "../lib/aseprite";
 import { Images } from "../lib/images";
+import { lerp } from "../lib/util";
 import { centerCanvas } from "./camera";
 import { Level } from "./level";
 
-interface ImageLayerInfo {
-    image: string,
-    scale: number,
-    offset?: Point,
-}
-
-interface FillLayerInfo {
-    color: string,
-}
-
-type LayerInfo = ImageLayerInfo | FillLayerInfo;
-
-const BG_LAYERS: LayerInfo[] = [
-    {
-        image: "background",
-        scale: 0.05,
-        offset: {
-            x: 0,
-            y: -20,
-        },
-    },
-    {
-        color: "#c0cbdc",
-    },
-];
 export class Background {
     level: Level;
 
@@ -40,25 +16,12 @@ export class Background {
         this.level = level;
         this.offset = offset;
 
-        for (const layer of BG_LAYERS) {
-            if ("image" in layer) {
-                this.layers.push(
-                    new ImageLayer({
-                        background: this,
-                        image: layer.image,
-                        scale: layer.scale,
-                        offset: layer.offset,
-                    })
-                );
-            }
-            else {
-                this.layers.push(
-                    new FillLayer({
-                        color: layer.color,
-                    })
-                );
-            }
-        }
+        this.layers = [
+            new FillLayer({
+                color: '#c0cbdc',
+            }),
+            new CloudLayer(this),
+        ];
     }
 
     update(dt: number) {
@@ -74,15 +37,11 @@ export class Background {
     }
 
     static async preload() {
-        const promises: Promise<any>[] = [];
-        for (const layer of BG_LAYERS) {
-            if ("image" in layer) {
-                promises.push(
-                    Images.loadImage({ name: layer.image, path: "sprites/" })
-                );
-            }
-        }
-        await Promise.all(promises);
+        await Promise.all([
+            Aseprite.loadImage({
+                name: 'cloud', basePath: 'sprites/'
+            }),
+        ]);
     }
 }
 
@@ -111,62 +70,68 @@ class FillLayer implements BackgroundLayer {
     }
 }
 
-class ImageLayer implements BackgroundLayer{
+interface CloudInfo {
+    dx: number;
+    x: number;
+    y: number;
+    frame: number;
+}
+
+class CloudLayer implements BackgroundLayer {
     background: Background;
+
+    clouds: CloudInfo[] = [];
     animCount = 0;
-    image = "";
-    scale = 1;
+    cloudSpawnCount = 0;
 
-    offset: Point;
-
-    constructor({
-        background,
-        image,
-        scale,
-        offset = {x: 0, y: 0},
-    }: {
-        background: Background;
-        image: string;
-        scale: number;
-        offset?: Point;
-    }) {
+    constructor(background: Background) {
         this.background = background;
-        this.image = image;
-        this.scale = scale;
-        this.offset = offset;
+
+        // Lazy way to initialize this
+        for (var i = 0; i < 20; i++) {
+            this.update(20);
+        }
     }
 
-    update(dt: number) {
+    update(dt: number): void {
         this.animCount += dt;
+
+        for (let i = 0; i < this.clouds.length; i++) {
+            const cloud = this.clouds[i];
+            cloud.x += cloud.dx * dt;
+            // This number is weird and hard-coded but whatver I guess.
+            if (cloud.x > 30 * TILE_SIZE) {
+                this.clouds.splice(i, 1);
+                i--;
+            }
+        }
+
+        // Add some clouds periodically.
+        while (this.animCount > 4 * this.cloudSpawnCount) {
+            this.cloudSpawnCount++;
+            // These numbers are weird and hard-coded but whatver I guess.
+            this.clouds.push({
+                dx: physFromPx(lerp(0.02, 0.05, visualRng())) * FPS,
+                x: -8 * TILE_SIZE,
+                y: lerp(-30 * TILE_SIZE, 30 * TILE_SIZE, visualRng()),
+                frame: Math.floor(visualRng() * 4),
+            });
+        }
     }
 
-    render(context: CanvasRenderingContext2D) {
-        // TODO: Apply scale.
-        context.save();
-        context.resetTransform();
-
-        centerCanvas(context);
-
-        // This part of the code could be better so it's not reaching into the
-        // other parts of the code base as much. Probably requires refactoring
-        // of some camera stuff.
-        this.background.level.game.applyScale(context);
-        this.background.level.camera.applyTransform(context, this.scale);
-
-        // const isCloud = this.image.startsWith("bg-clouds");
-        // let windOffset = 0;
-        // if (isCloud) {
-        //     windOffset = 30 * this.scale * this.animCount;
-        // }
-
-        const image = Images.images[this.image].image!;
-        context.drawImage(image,
-            physFromPx(this.offset.x - image.width / 2 + this.scale * this.background.offset.x),
-            physFromPx(this.offset.y - image.height / 2 + this.scale * this.background.offset.y),
-            physFromPx(image.width),
-            physFromPx(image.height),
-        );
-
-        context.restore();
+    render(context: CanvasRenderingContext2D): void {
+        for (const cloud of this.clouds) {
+            Aseprite.drawSprite({
+                context,
+                image: 'cloud',
+                frame: cloud.frame,
+                position: {
+                    x: Math.round(cloud.x + this.background.offset.x),
+                    y: Math.round(cloud.y + this.background.offset.y),
+                },
+                scale: PHYSICS_SCALE,
+            });
+        }
     }
+
 }

@@ -7,7 +7,7 @@ Communication Log:
 
 👑: An introduction: JavaScript is a programming language used for controlling webpages. This game itself is created with JavaScript. In the developer console we can run code that will interact with the game.
 
-👑: There are a few ways we can run code in JavaScript, but one of the ways being functions. In JavaScript, you can "call" a function to make the webpage execute some code.
+👑: There are a few ways we can run code in JavaScript, one of the ways being functions. In JavaScript, you can "call" a function to make the webpage execute some code.
 
 👑: The way you do that is by typing the name of the function, followed by parentheses, like this: moveRight()
 

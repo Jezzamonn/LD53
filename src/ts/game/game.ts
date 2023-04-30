@@ -63,11 +63,17 @@ export class Game {
     }
 
     nextLevel() {
-        this.startLevel((this.levelIndex + 1) % LEVELS.length);
+        if (this.levelIndex == LEVELS.length - 1) {
+            return;
+        }
+        this.startLevel(this.levelIndex + 1);
     }
 
     prevLevel() {
-        this.startLevel((this.levelIndex + LEVELS.length - 1) % LEVELS.length);
+        if (this.levelIndex == 0) {
+            return;
+        }
+        this.startLevel(this.levelIndex + LEVELS.length - 1);
     }
 
     startLevel(levelIndex: number, restart = false) {
@@ -212,6 +218,7 @@ export class Game {
 
     exportActionsToGlobal() {
         window['restart'] = () => this.restart();
+        window['nextLevel'] = () => this.nextLevel();
         window['skipToEnd'] = () => this.startLevel(LEVELS.length - 1);
         window['mute'] = () => Sounds.toggleMute();
     }

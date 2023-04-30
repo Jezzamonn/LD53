@@ -34,3 +34,6 @@ export function pxFromPhys(x: number): number {
 
 // Not really a constant :)
 export const rng = seededRandom("the multistage fitness test is a maximal running test performed on a flat 20 meter distance");
+
+// For visual things that shouldn't impact gameplay.
+export const visualRng = seededRandom("Developed in the early 1980's, the multistage fitness test was created to provide a cost-effective and practical prediction of maximal oxygen uptake (V02 max) in children, adolescents, and adults.");

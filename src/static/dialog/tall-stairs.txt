@@ -10,9 +10,9 @@ for (var i = 0; i < 4; i++) {
 
 👑: Let me break that down:
 
-• The first part is the 'for' keyword, which starts the loop
+• The first part is the 'for' keyword, which starts the loop.
 • Inside the parentheses, we have three statements, and have a semicolon ; between each one.
-  • The first part is the code that runs at the start of the loop. Here, "var i = 0" creates a variable called i and sets it to 0
+  • The first part is the code that runs at the start of the loop. Here, "var i = 0" creates a variable called i and sets it to 0.
   • The second part is the code that is checked to see if the loop should keep going or not. Here, "i < 4" checks that the value of i is less than 4.
   • The third part is the code that runs each loop, after the code inside the curly-braces. Here, "i++" adds 1 to the value of i.
 

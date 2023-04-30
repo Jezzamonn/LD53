@@ -1,9 +1,9 @@
-👑: You'll need to make your way to elevator on each floor until you're at the top, to deliver the contents of the payload.
+👑: You'll need to make your way to the elevator on each floor until you're at the top, to deliver the contents of the payload.
 
 👑: Each time you call the moveRight() function, you move 1 tile to the right. On this floor you could call the function 5 times to get to the elevator. But there's something else we can do to make things easier.
 
 👑: In JavaScript, functions can take "arguments" that can be used as data in the function. For example, the moveRight() function has an optional argument that says how many tiles to move.
 
-👑: The way you do that is to put the parameters in between the parenthesis. For example, you can call moveRight(3) to move 3 tiles to the right.
+👑: The way you do that is to put the parameters in between the parentheses. For example, you can call moveRight(3) to move 3 tiles to the right.
 
 👑: Try calling the moveRight() function with a parameter of 5 to get to the elevator.

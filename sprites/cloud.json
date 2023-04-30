@@ -1,0 +1,49 @@
+{ "frames": [
+   {
+    "filename": "cloud 0.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 76, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 76, "h": 40 },
+    "sourceSize": { "w": 76, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "cloud 1.aseprite",
+    "frame": { "x": 77, "y": 1, "w": 76, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 76, "h": 40 },
+    "sourceSize": { "w": 76, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "cloud 2.aseprite",
+    "frame": { "x": 153, "y": 1, "w": 76, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 76, "h": 40 },
+    "sourceSize": { "w": 76, "h": 40 },
+    "duration": 100
+   },
+   {
+    "filename": "cloud 3.aseprite",
+    "frame": { "x": 229, "y": 1, "w": 76, "h": 40 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 76, "h": 40 },
+    "sourceSize": { "w": 76, "h": 40 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "cloud.png",
+  "format": "I8",
+  "size": { "w": 306, "h": 66 },
+  "scale": "1",
+  "frameTags": [
+  ]
+ }
+}
