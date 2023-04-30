@@ -12,6 +12,7 @@ import { Background } from "./background";
 import { Robot } from "./entity/robot";
 import { Guard } from "./entity/guard";
 import { KingBox } from "./entity/kingbox";
+import { KB } from "./KB";
 
 export class Game {
 
@@ -81,7 +82,7 @@ export class Game {
 
         this.curLevel = level;
 
-        if (levelInfo.song) {
+        if (levelInfo.song != undefined) {
             Sounds.setSong(levelInfo.song);
         }
 
@@ -224,7 +225,9 @@ export class Game {
             Guard.preload(),
             KingBox.preload(),
             Background.preload(),
-            Sounds.loadSound({name: 'bell', path: 'sfx'})
+            Sounds.loadSound({name: 'bell', path: 'sfx'}),
+            Sounds.loadSound({name: 'boss', path: 'music/'}),
+            KB.preload(),
         ]);
         SFX.preload();
     }

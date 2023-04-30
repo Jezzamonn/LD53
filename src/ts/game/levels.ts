@@ -1,12 +1,12 @@
 import { Point } from "../common";
 import { Images } from "../lib/images";
 import { Sounds } from "../lib/sounds";
+import { KB } from "./KB";
 
 export interface LevelInfo {
     name: string;
     song?: string;
     message?: string;
-    spawn?: Point;
 }
 
 
@@ -30,7 +30,6 @@ export const LEVELS: LevelInfo[] = [
     },
     {
         name: 'tall-stairs',
-        spawn: { x: 1, y: 5 },
     },
     {
         name: 'multiple-stairs',
@@ -40,6 +39,9 @@ export const LEVELS: LevelInfo[] = [
     },
     {
         name: 'snake',
+    },
+    {
+        name: 'snake2',
     },
     {
         name: 'kingbox',
@@ -60,7 +62,7 @@ export class Levels {
                 );
             }
             promises.push(
-                loadTextFile(level.name, 'level/').then(message => level.message = message)
+                KB.loadDialog(level.name)
             );
         }
 
@@ -96,19 +98,4 @@ export class Levels {
         }
         return 0;
     }
-}
-
-/**
- * Loads a test file via a fetch command and returns a promise with the contents of the file.
- *
- * If the file isn't found, just return an empty string for the moment.
- */
-function loadTextFile(filename: string, path: string): Promise<string> {
-    return fetch(path + filename + '.txt')
-        .then(response => {
-            if (response.ok) {
-                return response.text();
-            }
-            return '';
-        });
 }

@@ -2,7 +2,7 @@
 
 👑: If you're feeling clever, you could try using a loop here! You can put multiple functions inside the curly-braces of the loop, like this:
 
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < 4; i++) {
     jump()
     moveLeft(2)
 }

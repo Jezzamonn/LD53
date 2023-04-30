@@ -1,5 +1,5 @@
 import { Point } from "../common";
-import { rng, TILE_SIZE, TILE_SIZE_PX } from "../constants";
+import { FPS, PHYSICS_SCALE, rng, TILE_SIZE, TILE_SIZE_PX } from "../constants";
 import { Entity } from "./entity/entity";
 import { Sprite } from "./entity/sprite";
 import { Images } from "../lib/images";
@@ -14,6 +14,8 @@ import { Robot } from "./entity/robot";
 import { Guard } from "./entity/guard";
 import { Sounds } from "../lib/sounds";
 import { KingBox } from "./entity/kingbox";
+import { SFX } from "./sfx";
+import { KB } from "./KB";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -27,7 +29,7 @@ export class Level {
 
     tiles: Tiles = new Tiles(0, 0);
 
-    spawn: Point = { x: 0, y: 0 };
+    spawn: Point = { x: -1, y: -1 };
 
     won = false;
 
@@ -107,12 +109,21 @@ export class Level {
                         console.log(`Unknown color: ${color} at ${x}, ${y}.`);
                         break;
                 }
+            }
+        }
 
-                if (this.levelInfo.spawn && this.levelInfo.spawn.x == x && this.levelInfo.spawn.y == y) {
-                    this.spawn = basePos;
+        if (this.spawn.x == -1 || this.spawn.y == -1) {
+            // If there was no marked spawn point, spawn the player at the lowest and most left stair tile.
+            outer: for (let y = this.tiles.baseLayer.maxY; y >= 0; y--) {
+                for (let x = 0; x < this.tiles.baseLayer.w; x++) {
+                    if (this.tiles.baseLayer.getTile({ x, y }) == BaseTile.Stairs) {
+                        this.spawn = this.tiles.getTileCoord({ x, y }, { x: 0.5, y: 1 });
+                        break outer;
+                    }
                 }
             }
         }
+
         this.tiles.baseLayer.fillInUnknownTiles();
 
         this.tiles.baseLayer.allowGrow = true;
@@ -124,16 +135,12 @@ export class Level {
     }
 
     logMessage() {
-        const message = this.levelInfo.message;
-        if (!message) {
-            return;
-        }
-        console.log(message);
+        KB.speak(this.levelInfo.name);
     }
 
     spawnPlayer() {
         // const robot = new Robot(this);
-        const robot = new KingBox(this);
+        const robot = new Robot(this);
         robot.midX = this.spawn.x;
         robot.maxY = this.spawn.y;
         this.entities.push(robot);
@@ -144,6 +151,28 @@ export class Level {
         }
 
         robot.exportActionsToGlobal();
+    }
+
+    spawnKingBox(coord: Point) {
+        this.tiles.objectLayer.setTileAtCoord(coord, ObjectTile.Empty);
+
+        const tileBasePos = this.tiles.getTileCoordFromCoord(coord, {x: 0.5, y: 1});
+
+        // Spawn king box!
+        const kingBox = new KingBox(this);
+        kingBox.midX = tileBasePos.x;
+        kingBox.maxY = tileBasePos.y;
+        kingBox.spawnJump();
+        this.entities.push(kingBox);
+
+        this.camera.target = () => kingBox.cameraFocus();
+
+        kingBox.exportActionsToGlobal();
+
+        // Play music!
+        Sounds.setSong('boss');
+        // Play sound effect!
+        SFX.play('explode');
     }
 
     update(dt: number) {

@@ -1,6 +1,7 @@
 import { FacingDir, Point } from "../../common";
 import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
+import { Sounds } from "../../lib/sounds";
 import { Level } from "../level";
 import { SFX } from "../sfx";
 import { BaseTile } from "../tile/base-layer";
@@ -11,7 +12,8 @@ export enum RobotAction {
     MoveLeft,
     MoveRight,
     Jump,
-    Eat, // KingBox only actually.
+    Destroy, // KingBox only actually.
+    Open,
 }
 
 interface RobotActionData {
@@ -31,8 +33,8 @@ export class Robot extends Entity {
 
     desiredMidX = 0;
 
-    imageName = 'box';
-    emoji = '📦';
+    imageName = "box";
+    emoji = "📦";
 
     constructor(level: Level) {
         super(level);
@@ -46,23 +48,33 @@ export class Robot extends Entity {
 
         const prevAnimCount = this.animCount;
         // Relative to the start of the animation.
-        const prevFrame = Aseprite.getFrame(this.imageName, animationName, prevAnimCount) - Aseprite.getFrame(this.imageName, animationName, 0);
+        const prevFrame =
+            Aseprite.getFrame(this.imageName, animationName, prevAnimCount) -
+            Aseprite.getFrame(this.imageName, animationName, 0);
 
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
                 this.currentAction = this.queuedActions.shift()!;
                 switch (this.currentAction.action) {
                     case RobotAction.MoveLeft:
+                        console.log(`${this.emoji}: Moving Left!`);
                         this.startMoveLeft(this.currentAction.data ?? 1);
                         break;
                     case RobotAction.MoveRight:
+                        console.log(`${this.emoji}: Moving Right!`);
                         this.startMoveRight(this.currentAction.data ?? 1);
                         break;
                     case RobotAction.Jump:
+                        console.log(`${this.emoji}: Jumping!`);
                         this.startJump();
                         break;
-                    case RobotAction.Eat:
+                    case RobotAction.Destroy:
+                        console.log(`${this.emoji}: DESTROY!`);
                         this.startEat();
+                        break;
+                    case RobotAction.Open:
+                        console.log(`${this.emoji}: Opening...`);
+                        this.tryOpen();
                         break;
                 }
             } else {
@@ -72,7 +84,9 @@ export class Robot extends Entity {
 
         // Do this part now so the eat animation can react to it.
         this.animCount += dt;
-        const curFrame = Aseprite.getFrame(this.imageName, animationName, this.animCount) - Aseprite.getFrame(this.imageName, animationName, 0);
+        const curFrame =
+            Aseprite.getFrame(this.imageName, animationName, this.animCount) -
+            Aseprite.getFrame(this.imageName, animationName, 0);
 
         switch (this.currentAction?.action) {
             case RobotAction.MoveLeft:
@@ -89,7 +103,7 @@ export class Robot extends Entity {
                     this.finishAction();
                 }
                 break;
-            case RobotAction.Eat:
+            case RobotAction.Destroy:
                 this.dx = 0;
                 // TODO: Check the progress of the eating animation and:
                 // - destroy stuff at the right time.
@@ -98,8 +112,7 @@ export class Robot extends Entity {
                     if (curFrame == 3) {
                         // TODO: Play chomp / explosion sound, and do the actual destruction.
                         this.doEatingDestruction();
-                    }
-                    else if (curFrame == 5) {
+                    } else if (curFrame == 5) {
                         // End.
                         this.finishAction();
                     }
@@ -111,8 +124,7 @@ export class Robot extends Entity {
 
         if (this.dx > 0.01) {
             this.facingDir = FacingDir.Right;
-        }
-        else if (this.dx < -0.01) {
+        } else if (this.dx < -0.01) {
             this.facingDir = FacingDir.Left;
         }
 
@@ -123,9 +135,9 @@ export class Robot extends Entity {
         this.move(dt);
 
         // Play a sound depending on the frame of the animation.
-        if (animationName == 'run') {
+        if (animationName == "run") {
             if (prevFrame != curFrame && curFrame == 1) {
-                SFX.play('step');
+                SFX.play("step");
             }
         }
     }
@@ -134,17 +146,20 @@ export class Robot extends Entity {
         if (Math.abs(this.dx) > 0.01) {
             return "run";
         }
-        return 'idle';
+        return "idle";
     }
-
 
     finishAction() {
         // Quick hack to make this dialog appear here.
-        if (this.currentAction?.action == RobotAction.MoveRight &&
+        if (
+            this.currentAction?.action == RobotAction.MoveRight &&
             this.level.levelInfo.name == "lobby" &&
-            !this.level.game.gameState.hasCalledMoveRight) {
+            !this.level.game.gameState.hasCalledMoveRight
+        ) {
             this.level.game.gameState.hasCalledMoveRight = true;
-            console.log('👑: Good job! Try calling it again to make it to the elevator.')
+            console.log(
+                "👑: Good job! Try calling it again to make it to the elevator."
+            );
         }
 
         this.currentAction?.resolve();
@@ -152,7 +167,6 @@ export class Robot extends Entity {
         this.dx = 0;
 
         // Quick hardcoded thing to play a message a function is first called on the first level.
-
     }
 
     checkForWin() {
@@ -166,8 +180,9 @@ export class Robot extends Entity {
     onLeftCollision(): void {
         super.onLeftCollision();
         if (
-            this.currentAction?.action == RobotAction.MoveLeft ||
-            this.currentAction?.action == RobotAction.MoveRight
+            this.isStanding() &&
+            (this.currentAction?.action == RobotAction.MoveLeft ||
+                this.currentAction?.action == RobotAction.MoveRight)
         ) {
             this.finishAction();
         }
@@ -176,8 +191,9 @@ export class Robot extends Entity {
     onRightCollision(): void {
         super.onRightCollision();
         if (
-            this.currentAction?.action == RobotAction.MoveLeft ||
-            this.currentAction?.action == RobotAction.MoveRight
+            this.isStanding() &&
+            (this.currentAction?.action == RobotAction.MoveLeft ||
+                this.currentAction?.action == RobotAction.MoveRight)
         ) {
             this.finishAction();
         }
@@ -190,6 +206,31 @@ export class Robot extends Entity {
         }
     }
 
+    tryOpen() {
+        // Check that a locked box is in front. Otherwise, fail!
+        const coord = { x: this.midX, y: this.midY };
+        const objectTile = this.level.tiles.objectLayer.getTileAtCoord(coord);
+        if (objectTile != ObjectTile.LockedBox) {
+            console.error(
+                `${this.emoji}: Nothing to open! Try moving in front of the box`
+            );
+            return;
+        }
+
+        // Clear the queue of actions.
+        this.queuedActions = [];
+
+        // Now we need to spawn the box. Should probably be some animation, that can come later I guess.
+        // Maybe should move this robot out of the way?
+        // TODO: Animate this.
+        this.x -= 0.5 * TILE_SIZE;
+
+        this.level.spawnKingBox(coord);
+
+        // Maybe there should be a delay before finishing?
+        this.finishAction();
+    }
+
     /**
      * Start moving the robot left
      *
@@ -197,23 +238,31 @@ export class Robot extends Entity {
      */
     startMoveLeft(amount: number) {
         this.desiredMidX = this.midX - TILE_SIZE * amount;
-        console.log(`${this.emoji}: Moving Left!`);
     }
 
     startEat() {
-        console.log(`${this.emoji}: DESTROY!`);
         this.animCount = 0;
     }
 
     doEatingDestruction() {
         // TODO: Maybe only play explosion when actually destroying something?
-        SFX.play('explode');
-        const destructCoord = {x: this.midX + this.facingDirMult * TILE_SIZE, y: this.midY};
-        const baseTile = this.level.tiles.baseLayer.getTileAtCoord(destructCoord);
+        SFX.play("explode");
+        const destructCoord = {
+            x: this.midX + this.facingDirMult * TILE_SIZE,
+            y: this.midY,
+        };
+        const baseTile =
+            this.level.tiles.baseLayer.getTileAtCoord(destructCoord);
         if (baseTile != BaseTile.Outside) {
-            this.level.tiles.baseLayer.setTileAtCoord(destructCoord, BaseTile.Background);
+            this.level.tiles.baseLayer.setTileAtCoord(
+                destructCoord,
+                BaseTile.Background
+            );
         }
-        this.level.tiles.objectLayer.setTileAtCoord(destructCoord, ObjectTile.Empty);
+        this.level.tiles.objectLayer.setTileAtCoord(
+            destructCoord,
+            ObjectTile.Empty
+        );
     }
 
     /**
@@ -223,14 +272,11 @@ export class Robot extends Entity {
      */
     startMoveRight(amount: number) {
         this.desiredMidX = this.midX + TILE_SIZE * amount;
-        console.log(`${this.emoji}: Moving Right!`);
     }
 
     startJump() {
         this.dy = -this.jumpSpeed;
-        SFX.play('jump');
-
-        console.log(`${this.emoji}: Jumping!`);
+        SFX.play("jump");
     }
 
     queueAction(action: RobotAction, data: any = undefined): Promise<void> {
@@ -270,17 +316,29 @@ export class Robot extends Entity {
         (window as any).moveRight = (tiles: number) => {
             // Hello! If you're seeing this message, you typed "moveRight" without adding the parentheses at the end. To call the function, type "moveRight()".
             return this.queueAction(RobotAction.MoveRight, tiles);
-        }
+        };
         (window as any).jump = (argument: any) => {
             // Hello! If you're seeing this message, you typed "jump" without adding the parentheses at the end. To call the function, type "jump()".
             if (argument !== undefined) {
-                console.warn(`${this.emoji}: Warning: jump() does not take any arguments. I will just jump once.`);
+                console.warn(
+                    `${this.emoji}: Warning: jump() does not take any arguments. I will just jump once.`
+                );
             }
             return this.queueAction(RobotAction.Jump);
-        }
+        };
+        // This overrides the default window.open function. Whatever.
+        (window as any).open = (argument: any) => {
+            // Hello! If you're seeing this message, you typed "open" without adding the parentheses at the end. To call the function, type "open()".
+            if (argument !== undefined) {
+                console.warn(
+                    `${this.emoji}: Warning: open() does not take any arguments.`
+                );
+            }
+            return this.queueAction(RobotAction.Open);
+        };
     }
 
     static async preload() {
-        await Aseprite.loadImage({ name: 'box', basePath: "sprites" });
+        await Aseprite.loadImage({ name: "box", basePath: "sprites" });
     }
 }

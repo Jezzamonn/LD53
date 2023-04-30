@@ -1,0 +1,16 @@
+👑: It's possible to put loops inside each other, when you want to run a loop multiple times. This is called a nested loop.
+
+👑: Here's an example:
+
+for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 4; j++) {
+        jump();
+    }
+    moveRight(4);
+}
+
+👑: In this example, the robot will jump 4 times, before moving to the left. Then all of THAT will happen 3 times.
+
+👑: Note that we used a different variable name for the inner loop. Each loop needs to have it's own variable name or the loops will interfere with each other.
+
+👑: Try the example here and let's see if we can get through this corridor!
