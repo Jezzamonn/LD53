@@ -66,29 +66,43 @@ export class Guard extends Entity {
         const robot = this.level.getEntitiesOfType(Robot)[0];
         if (!robot) {
             // That's weird. Whatever??
-        }
-
-        if (robot.dx == 0) {
             return;
         }
 
+        // Can't see moving robots.
+        if (robot.dx == 0) {
+            return false;
+        }
+
+        if (this.robotIsInRange(robot)) {
+            this.foundRobot = true;
+            this.level.lose();
+        }
+
+        // We found it! Now... lose the level?
+        this.level.lose();
+    }
+
+    robotIsInRange(robot: Robot): boolean {
         // Check if at same level
         const robotRow = Math.floor(robot.midY / TILE_SIZE);
         const guardRow = Math.floor(this.midY / TILE_SIZE);
         if (robotRow != guardRow) {
-            return;
+            return false;
         }
 
         // Check if line of sight
         const robotDirection = robot.midX > this.midX ? FacingDir.Right : FacingDir.Left;
         if (robotDirection != this.facingDir) {
-            return;
+            return false;
         }
 
-        // Consider checking distance too.
+        const dist = Math.abs(robot.midX - this.midX);
+        if (dist > 3 * TILE_SIZE) {
+            return false;
+        }
 
-        // We found it! Now... lose the level?
-        this.level.lose();
+        return true;
     }
 
     startIdle() {
