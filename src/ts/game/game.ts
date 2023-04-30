@@ -11,6 +11,7 @@ import { Tiles } from "./tile/tiles";
 import { Background } from "./background";
 import { Robot } from "./entity/robot";
 import { Guard } from "./entity/guard";
+import { KingBox } from "./entity/kingbox";
 
 export class Game {
 
@@ -219,6 +220,7 @@ export class Game {
             Tiles.preload(),
             Robot.preload(),
             Guard.preload(),
+            KingBox.preload(),
             Background.preload(),
             Sounds.loadSound({name: 'bell', path: 'sfx'})
         ]);

@@ -20,6 +20,10 @@ export class Entity {
     canCollide = true;
     done = false;
 
+    get facingDirMult(): number {
+        return this.facingDir == FacingDir.Right ? 1 : -1;
+    }
+
     debugColor: string | undefined = '#ff00ff'
 
     constructor(level: Level) {

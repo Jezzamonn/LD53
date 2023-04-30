@@ -3,6 +3,7 @@ import { FPS, PHYSICS_SCALE, TILE_SIZE, physFromPx } from "../../constants";
 import { Aseprite } from "../../lib/aseprite";
 import { Level } from "../level";
 import { SFX } from "../sfx";
+import { BaseTile } from "../tile/base-layer";
 import { ObjectTile } from "../tile/object-layer";
 import { Entity } from "./entity"
 
@@ -10,6 +11,7 @@ export enum RobotAction {
     MoveLeft,
     MoveRight,
     Jump,
+    Eat, // KingBox only actually.
 }
 
 interface RobotActionData {
@@ -17,8 +19,6 @@ interface RobotActionData {
     data?: any;
     resolve: () => void;
 }
-
-const imageName = 'box';
 
 export class Robot extends Entity {
     queuedActions: RobotActionData[] = [];
@@ -31,6 +31,9 @@ export class Robot extends Entity {
 
     desiredMidX = 0;
 
+    imageName = 'box';
+    emoji = '📦';
+
     constructor(level: Level) {
         super(level);
         // TODO: Set w and h based on graphics
@@ -39,7 +42,11 @@ export class Robot extends Entity {
     }
 
     update(dt) {
+        const animationName = this.getAnimationName();
+
         const prevAnimCount = this.animCount;
+        // Relative to the start of the animation.
+        const prevFrame = Aseprite.getFrame(this.imageName, animationName, prevAnimCount) - Aseprite.getFrame(this.imageName, animationName, 0);
 
         if (this.currentAction == undefined) {
             if (this.queuedActions.length > 0) {
@@ -54,11 +61,18 @@ export class Robot extends Entity {
                     case RobotAction.Jump:
                         this.startJump();
                         break;
+                    case RobotAction.Eat:
+                        this.startEat();
+                        break;
                 }
             } else {
                 this.checkForWin();
             }
         }
+
+        // Do this part now so the eat animation can react to it.
+        this.animCount += dt;
+        const curFrame = Aseprite.getFrame(this.imageName, animationName, this.animCount) - Aseprite.getFrame(this.imageName, animationName, 0);
 
         switch (this.currentAction?.action) {
             case RobotAction.MoveLeft:
@@ -75,19 +89,35 @@ export class Robot extends Entity {
                     this.finishAction();
                 }
                 break;
+            case RobotAction.Eat:
+                this.dx = 0;
+                // TODO: Check the progress of the eating animation and:
+                // - destroy stuff at the right time.
+                // - finish the action when it's done.
+                if (prevFrame != curFrame) {
+                    if (curFrame == 3) {
+                        // TODO: Play chomp / explosion sound, and do the actual destruction.
+                        this.doEatingDestruction();
+                    }
+                    else if (curFrame == 5) {
+                        // End.
+                        this.finishAction();
+                    }
+                }
+                break;
             default:
                 this.dx = 0;
         }
 
-        super.update(dt);
+        // Rest of the update stuff from super.update()
+        this.applyGravity(dt);
+        this.dampX(dt);
+
+        this.move(dt);
 
         // Play a sound depending on the frame of the animation.
-        const animationName = this.getAnimationName();
         if (animationName == 'run') {
-            const prevFrame = Aseprite.getFrame(imageName, animationName, prevAnimCount);
-            const curFrame = Aseprite.getFrame(imageName, animationName, this.animCount);
-
-            if (prevFrame != curFrame && curFrame == 5) {
+            if (prevFrame != curFrame && curFrame == 1) {
                 SFX.play('step');
             }
         }
@@ -102,6 +132,7 @@ export class Robot extends Entity {
 
 
     finishAction() {
+        // Quick hack to make this dialog appear here.
         if (this.currentAction?.action == RobotAction.MoveRight &&
             this.level.levelInfo.name == "lobby" &&
             !this.level.game.gameState.hasCalledMoveRight) {
@@ -159,7 +190,20 @@ export class Robot extends Entity {
      */
     startMoveLeft(amount: number) {
         this.desiredMidX = this.midX - TILE_SIZE * amount;
-        console.log('📦: Moving Left!');
+        console.log(`${this.emoji}: Moving Left!`);
+    }
+
+    startEat() {
+        console.log(`${this.emoji}: DESTROY!`);
+        this.animCount = 0;
+    }
+
+    doEatingDestruction() {
+        SFX.play('explode');
+        // TODO: Figure out how this works with the sky and such.
+        const destructCoord = {x: this.midX + this.facingDirMult * TILE_SIZE, y: this.midY};
+        this.level.tiles.baseLayer.setTileAtCoord(destructCoord, BaseTile.Background);
+        this.level.tiles.objectLayer.setTileAtCoord(destructCoord, ObjectTile.Empty);
     }
 
     /**
@@ -169,7 +213,14 @@ export class Robot extends Entity {
      */
     startMoveRight(amount: number) {
         this.desiredMidX = this.midX + TILE_SIZE * amount;
-        console.log('📦: Moving Right!');
+        console.log(`${this.emoji}: Moving Right!`);
+    }
+
+    startJump() {
+        this.dy = -this.jumpSpeed;
+        SFX.play('jump');
+
+        console.log(`${this.emoji}: Jumping!`);
     }
 
     queueAction(action: RobotAction, data: any = undefined): Promise<void> {
@@ -182,25 +233,17 @@ export class Robot extends Entity {
         });
     }
 
-    startJump() {
-        this.dy = -this.jumpSpeed;
-        SFX.play('jump');
-
-        console.log('📦: Jumping!');
-    }
-
     render(context: CanvasRenderingContext2D) {
         let animationName = this.getAnimationName();
 
         Aseprite.drawAnimation({
             context,
-            image: imageName,
+            image: this.imageName,
             animationName,
             time: this.animCount,
             position: { x: this.midX, y: this.maxY },
             scale: PHYSICS_SCALE,
             anchorRatios: { x: 0.5, y: 1 },
-            // filter: filter,
             flippedX: this.facingDir == FacingDir.Left,
         });
     }
@@ -221,13 +264,13 @@ export class Robot extends Entity {
         (window as any).jump = (argument: any) => {
             // Hello! If you're seeing this message, you typed "jump" without adding the parentheses at the end. To call the function, type "jump()".
             if (argument !== undefined) {
-                console.warn("📦: Warning: jump() does not take any arguments. I will just jump once.");
+                console.warn(`${this.emoji}: Warning: jump() does not take any arguments. I will just jump once.`);
             }
             return this.queueAction(RobotAction.Jump);
         }
     }
 
     static async preload() {
-        await Aseprite.loadImage({ name: imageName, basePath: "sprites" });
+        await Aseprite.loadImage({ name: 'box', basePath: "sprites" });
     }
 }

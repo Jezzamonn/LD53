@@ -13,6 +13,7 @@ import { ObjectTile } from "./tile/object-layer";
 import { Robot } from "./entity/robot";
 import { Guard } from "./entity/guard";
 import { Sounds } from "../lib/sounds";
+import { KingBox } from "./entity/kingbox";
 
 // Contains everything in one level, including the tiles and the entities.
 export class Level {
@@ -110,6 +111,9 @@ export class Level {
         }
         this.tiles.baseLayer.fillInUnknownTiles();
 
+        this.tiles.baseLayer.allowGrow = true;
+        this.tiles.objectLayer.allowGrow = true;
+
         this.camera.target = () => this.tiles.baseLayer.centerInPhysCoords;
 
         this.spawnPlayer();
@@ -124,7 +128,8 @@ export class Level {
     }
 
     spawnPlayer() {
-        const robot = new Robot(this);
+        // const robot = new Robot(this);
+        const robot = new KingBox(this);
         robot.midX = this.spawn.x;
         robot.maxY = this.spawn.y;
         this.entities.push(robot);

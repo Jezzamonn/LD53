@@ -1,9 +1,9 @@
 Commence: Mission Programmable
 
 Communication Log:
-👑: Hello operative. Welcome to Mission Programmable. I'm Agent KB, and I'll be directing you what to do in this mission. The only way I can communicate is through the developer console here, so read carefully.
+👑: Hello operative. Welcome to Mission Programmable. I'm 👑Agent KB, and I'll be directing you what to do in this mission. The only way I can communicate is through the developer console here, so read carefully.
 
-👑: Our mission is to deliver this package to the top level of this building. The package is the latest BEZO-BOT, and can be controlled by writing JavaScript code in the developer console here. In playing through this mission, you'll learn some beginner JavaScript coding!
+👑: Our mission is to deliver this package to the top level of this building. What looks like a normal package is actually our latest HI-TECH PROGRAMMABLE STEALTH BOT™️, and can be controlled by writing JavaScript code in the developer console here. In playing through this mission, you'll learn some beginner JavaScript coding!
 
 👑: An introduction: JavaScript is a programming language used for controlling webpages. This game itself is created with JavaScript. In the developer console we can run code that will interact with the game.
 
@@ -11,4 +11,4 @@ Communication Log:
 
 👑: The way you do that is by typing the name of the function, followed by parentheses, like this: moveRight()
 
-👑: Try it out! Type moveRight() in the developer console and press enter. You should see the BEZO-BOT move right one space.
+👑: Try it out! Type moveRight() in the developer console and press enter. You should see the STEALTH BOT move right one space.

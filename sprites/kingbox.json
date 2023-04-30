@@ -1,0 +1,143 @@
+{ "frames": [
+   {
+    "filename": "kingbox 0.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 4000
+   },
+   {
+    "filename": "kingbox 1.aseprite",
+    "frame": { "x": 1, "y": 33, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 2.aseprite",
+    "frame": { "x": 49, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 3.aseprite",
+    "frame": { "x": 49, "y": 33, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 4.aseprite",
+    "frame": { "x": 97, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 5.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 6.aseprite",
+    "frame": { "x": 97, "y": 33, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 7.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 300
+   },
+   {
+    "filename": "kingbox 8.aseprite",
+    "frame": { "x": 145, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 9.aseprite",
+    "frame": { "x": 145, "y": 33, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 100
+   },
+   {
+    "filename": "kingbox 10.aseprite",
+    "frame": { "x": 193, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 200
+   },
+   {
+    "filename": "kingbox 11.aseprite",
+    "frame": { "x": 193, "y": 33, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 50
+   },
+   {
+    "filename": "kingbox 12.aseprite",
+    "frame": { "x": 1, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 50
+   },
+   {
+    "filename": "kingbox 13.aseprite",
+    "frame": { "x": 241, "y": 1, "w": 48, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 32 },
+    "sourceSize": { "w": 48, "h": 32 },
+    "duration": 50
+   }
+ ],
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.2.40-x64",
+  "image": "kingbox.png",
+  "format": "RGBA8888",
+  "size": { "w": 290, "h": 66 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "idle", "from": 0, "to": 3, "direction": "forward" },
+   { "name": "run", "from": 4, "to": 6, "direction": "forward" },
+   { "name": "eat", "from": 7, "to": 12, "direction": "forward" },
+   { "name": "locked", "from": 13, "to": 13, "direction": "forward" }
+  ]
+ }
+}
