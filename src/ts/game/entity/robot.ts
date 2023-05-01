@@ -139,6 +139,17 @@ export class Robot extends Entity {
             this.facingDir = FacingDir.Left;
         }
 
+        // Following
+        if (this.followTarget) {
+            const xDiff = this.midX - this.followTarget.midX;
+            if (xDiff < -TILE_SIZE) {
+                this.dx = this.moveSpeed;
+            }
+            else if (xDiff > TILE_SIZE) {
+                this.dx = -this.moveSpeed;
+            }
+        }
+
         // Rest of the update stuff from super.update()
         this.applyGravity(dt);
         this.dampX(dt);
@@ -149,34 +160,6 @@ export class Robot extends Entity {
         if (animationName == "run") {
             if (prevFrame != curFrame && curFrame == 1) {
                 SFX.play("step");
-            }
-        }
-
-        // Following
-        if (this.followTarget) {
-            const lastPosition = this.followCoords[this.followCoords.length - 1];
-            if (
-                !lastPosition ||
-                lastPosition.x != this.followTarget.midX ||
-                lastPosition.y != this.followTarget.maxY
-            ) {
-                this.followCoords.push({ x: this.followTarget.midX, y: this.followTarget.maxY });
-            }
-
-            const xDiff = this.followTarget.midX - this.midX;
-            if (Math.abs(xDiff) > TILE_SIZE) {
-                if (this.followCoords.length > 0) {
-                    const target = this.followCoords.shift()!;
-                    this.midX = target.x;
-                    // this.maxY = target.y;
-                }
-
-                // To stop the list from getting too long.
-                if (this.followCoords.length > 20) {
-                    const target = this.followCoords.shift()!;
-                    this.midX = target.x;
-                    // this.maxY = target.y;
-                }
             }
         }
     }
