@@ -64,7 +64,7 @@ a:visited {
 }
 
 .title h1 {
-    font-size: calc(var(--pageHeight) * 0.1);
+    font-size: calc(var(--pageHeight) * 0.07);
 }
 
 .title p {
@@ -73,7 +73,7 @@ a:visited {
 
 .title-box {
     flex-grow: 1;
-    background: no-repeat center/contain url('../sprites/title-box.png');
+    background: no-repeat center/contain url('../sprites/title-box.gif');
 }
 
 .instructions {
