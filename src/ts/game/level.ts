@@ -349,6 +349,19 @@ export class Level {
         this.destructionX = 0;
         this.destructionY = this.tiles.baseLayer.maxY - 1;
 
+        // Spawn a big of bb robots
+        let lastRobot = this.getEntitiesOfType(Robot)[0];
+        for (let i = 0; i < 10; i++) {
+            const robot = new Robot(this);
+            robot.midX = kingBox.midX;
+            robot.maxY = kingBox.maxY;
+            robot.dy = -10;
+            robot.followTarget = lastRobot;
+
+            this.entities.push(robot);
+            lastRobot = robot;
+        }
+
         KB.speak('win');
     }
 
