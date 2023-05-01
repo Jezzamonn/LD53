@@ -89,11 +89,12 @@ a:visited {
 
     background-color: rgba(0, 0, 0, 0.3);
 
-    font-size: 32px;
+    font-size: calc(var(--pageHeight) * 0.04);
 }
 
 .instructions p {
     max-width: 800px;
+    margin: 0.5em;
 }
 
 .hidden {

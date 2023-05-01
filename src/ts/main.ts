@@ -19,6 +19,9 @@ function hideTitle() {
 
     window.removeEventListener('click', hideTitle);
 
+    // Clear the console because the page we're hosting on might have JavaScript warnings.
+    console.clear();
+
     const game = new Game('.canvas');
     game.start();
 }
