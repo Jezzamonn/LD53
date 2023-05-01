@@ -40,6 +40,9 @@ export class Robot extends Entity {
     speed = 1;
     chainedActions = 0;
 
+    followTarget: Entity | undefined;
+    followCoords: Point[] = [];
+
     constructor(level: Level) {
         super(level);
         // TODO: Set w and h based on graphics
@@ -146,6 +149,34 @@ export class Robot extends Entity {
         if (animationName == "run") {
             if (prevFrame != curFrame && curFrame == 1) {
                 SFX.play("step");
+            }
+        }
+
+        // Following
+        if (this.followTarget) {
+            const lastPosition = this.followCoords[this.followCoords.length - 1];
+            if (
+                !lastPosition ||
+                lastPosition.x != this.followTarget.midX ||
+                lastPosition.y != this.followTarget.maxY
+            ) {
+                this.followCoords.push({ x: this.followTarget.midX, y: this.followTarget.maxY });
+            }
+
+            const xDiff = this.followTarget.midX - this.midX;
+            if (Math.abs(xDiff) > TILE_SIZE) {
+                if (this.followCoords.length > 0) {
+                    const target = this.followCoords.shift()!;
+                    this.midX = target.x;
+                    // this.maxY = target.y;
+                }
+
+                // To stop the list from getting too long.
+                if (this.followCoords.length > 20) {
+                    const target = this.followCoords.shift()!;
+                    this.midX = target.x;
+                    // this.maxY = target.y;
+                }
             }
         }
     }

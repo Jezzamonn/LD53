@@ -239,6 +239,9 @@ export class Level {
 
         kingBox.exportActionsToGlobal();
 
+        const otherBox = this.getEntitiesOfType(Robot)[0];
+        otherBox.followTarget = kingBox;
+
         // Play music!
         Sounds.setSong('boss');
         // Play sound effect!
