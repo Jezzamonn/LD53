@@ -87,6 +87,10 @@ export class Levels {
         localStorage.setItem('mission-programmable-level', levelInfo.name);
     }
 
+    static clearSavedLevel() {
+        localStorage.removeItem('mission-programmable-level');
+    }
+
     static getSavedLevelIndex(): number {
         const savedLevelName = localStorage.getItem('mission-programmable-level');
         if (savedLevelName) {

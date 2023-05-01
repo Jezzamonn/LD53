@@ -32,6 +32,7 @@ export class Game {
 
     gameState = {
         hasCalledMoveRight: false,
+        hasTalkedAboutFoundations: false,
     };
 
     constructor(canvasSelector: string) {
@@ -59,7 +60,14 @@ export class Game {
 
         this.doAnimationLoop();
 
-        this.startLevel(Levels.getSavedLevelIndex());
+        const savedLevel = Levels.getSavedLevelIndex();
+        if (savedLevel != 0) {
+            KB.speak('reload');
+        }
+
+        this.exportActionsToGlobal();
+
+        this.startLevel(savedLevel);
     }
 
     nextLevel() {
@@ -221,6 +229,11 @@ export class Game {
         window['nextLevel'] = () => this.nextLevel();
         window['skipToEnd'] = () => this.startLevel(LEVELS.length - 1);
         window['mute'] = () => Sounds.toggleMute();
+        window['newGame'] = () => {
+            Levels.clearSavedLevel();
+            // Reload the page
+            window.location.reload();
+        }
     }
 
     static async preload() {

@@ -13,6 +13,8 @@ export class KB {
             this.loadDialog('unlock'),
             this.loadDialog('win'),
             this.loadDialog('after-first-move'),
+            this.loadDialog('foundations'),
+            this.loadDialog('reload'),
         ]);
     }
 

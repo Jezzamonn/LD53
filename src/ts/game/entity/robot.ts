@@ -226,7 +226,7 @@ export class Robot extends Entity {
         }
 
         // Clear the queue of actions.
-        this.queuedActions = [];
+        this.stop();
 
         // Now we need to spawn the box. Should probably be some animation, that can come later I guess.
         // Maybe should move this robot out of the way?
@@ -253,24 +253,21 @@ export class Robot extends Entity {
     }
 
     doEatingDestruction() {
+        const destructCoord = {
+            x: Math.floor(this.midX / TILE_SIZE) + this.facingDirMult,
+            y: Math.floor(this.midY / TILE_SIZE),
+        };
+        this.level.destroyAtCoord(destructCoord);
+
         // TODO: Maybe only play explosion when actually destroying something?
         SFX.play("explode");
-        const destructCoord = {
-            x: this.midX + this.facingDirMult * TILE_SIZE,
-            y: this.midY,
-        };
-        const baseTile =
-            this.level.tiles.baseLayer.getTileAtCoord(destructCoord);
-        if (baseTile != BaseTile.Outside) {
-            this.level.tiles.baseLayer.setTileAtCoord(
-                destructCoord,
-                BaseTile.Background
-            );
+    }
+
+    // Empties the queue.
+    stop() {
+        while (this.queuedActions.length > 0) {
+            this.queuedActions.shift()?.resolve();
         }
-        this.level.tiles.objectLayer.setTileAtCoord(
-            destructCoord,
-            ObjectTile.Empty
-        );
     }
 
     /**

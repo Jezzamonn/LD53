@@ -168,6 +168,10 @@ export class Entity {
         return this.maxX > other.minX && this.minX < other.maxX && this.maxY > other.minY && this.minY < other.maxY;
     }
 
+    isTouchingPoint(point: Point): boolean {
+        return this.maxX > point.x && this.minX < point.x && this.maxY > point.y && this.minY < point.y;
+    }
+
     render(context: CanvasRenderingContext2D) {
         if (this.debugColor) {
             context.fillStyle = this.debugColor;

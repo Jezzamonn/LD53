@@ -1,0 +1,1 @@
+Loading saved progress. If you want to start a new game, call the newGame() function!

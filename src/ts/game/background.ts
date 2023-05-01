@@ -112,7 +112,7 @@ class CloudLayer implements BackgroundLayer {
             // These numbers are weird and hard-coded but whatver I guess.
             this.clouds.push({
                 dx: physFromPx(lerp(0.02, 0.05, visualRng())) * FPS,
-                x: -8 * TILE_SIZE,
+                x: -12 * TILE_SIZE,
                 y: lerp(-30 * TILE_SIZE, 30 * TILE_SIZE, visualRng()),
                 frame: Math.floor(visualRng() * 4),
             });

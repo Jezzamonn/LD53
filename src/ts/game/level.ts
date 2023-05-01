@@ -34,6 +34,10 @@ export class Level {
 
     won = false;
 
+    destructionY = 0;
+    destructionX = 0;
+    destructionCount = 0;
+
     constructor(game: Game, levelInfo: LevelInfo) {
         this.game = game;
         this.levelInfo = levelInfo;
@@ -262,12 +266,59 @@ export class Level {
     levelSpecificUpdate(dt: number) {
         switch (this.levelInfo.name) {
             case 'kingbox':
-                if (!this.won && this.noMoreTilesOnGround()) {
-                    this.won = true;
+                if (this.noMoreTilesOnGround()) {
                     this.destroyBuilding();
+                }
+                this.sayMessageIfKingBoxIsOnBottomFloor();
+
+                if (this.won) {
+                    this.destroySomeStuff(dt);
                 }
                 break;
         }
+    }
+
+    destroySomeStuff(dt: number) {
+        if (this.destructionY <= this.tiles.baseLayer.minY) {
+            return;
+        }
+
+        this.destructionCount -= dt;
+        while (this.destructionCount <= 0) {
+
+            if (this.destructionX == this.tiles.baseLayer.minX && this.destructionY % 3 == 0) {
+                SFX.play('bigExplode');
+            }
+
+            this.destroyAtCoord({ x: this.destructionX, y: this.destructionY });
+            if (this.destructionX == this.tiles.baseLayer.maxX) {
+                this.destructionX = this.tiles.baseLayer.minX;
+                this.destructionY--;
+                this.destructionCount = 0.1;
+            }
+            else {
+                this.destructionX++;
+                this.destructionCount = 0;
+            }
+        }
+    }
+
+    sayMessageIfKingBoxIsOnBottomFloor() {
+        const kingBox = this.getEntitiesOfType(KingBox)[0];
+        if (!kingBox || !kingBox.isStanding()) {
+            return;
+        }
+        const kingBoxTileIndex = Math.floor(kingBox.maxY / TILE_SIZE);
+        if (kingBoxTileIndex != this.tiles.baseLayer.maxY - 1) {
+            return;
+        }
+
+        if (this.game.gameState.hasTalkedAboutFoundations) {
+            return;
+        }
+        this.game.gameState.hasTalkedAboutFoundations = true;
+
+        KB.speak('foundations');
     }
 
     noMoreTilesOnGround(): boolean {
@@ -284,7 +335,44 @@ export class Level {
     }
 
     destroyBuilding() {
+        if (this.won) {
+            return;
+        }
+        this.won = true;
+
+        const kingBox = this.getEntitiesOfType(KingBox)[0];
+        kingBox.stop();
+
+        this.destructionX = 0;
+        this.destructionY = this.tiles.baseLayer.maxY - 1;
+
         KB.speak('win');
+    }
+
+    destroyAtCoord(tilePoint: Point) {
+        const baseTile =
+            this.tiles.baseLayer.getTile(tilePoint);
+        if (baseTile != BaseTile.Outside) {
+            this.tiles.baseLayer.setTile(
+                tilePoint,
+                BaseTile.Background
+            );
+        }
+        this.tiles.objectLayer.setTile(
+            tilePoint,
+            ObjectTile.Empty
+        );
+
+        // Remove any sprites at this coord
+        for (const sprite of this.getEntitiesOfType(Sprite)) {
+            const spriteX = Math.floor(sprite.midX / TILE_SIZE);
+            const spriteY = Math.floor(sprite.maxY / TILE_SIZE);
+            if (spriteX == tilePoint.x && (spriteY == tilePoint.y || spriteY == tilePoint.y - 1)) {
+                sprite.done = true;
+            }
+        }
+
+        // TODO: Particles?? Maybe not needed though.
     }
 
     render(context: CanvasRenderingContext2D) {
