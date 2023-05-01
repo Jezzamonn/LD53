@@ -349,8 +349,15 @@ export class Level {
         this.destructionX = 0;
         this.destructionY = this.tiles.baseLayer.maxY - 1;
 
-        // Spawn a big of bb robots
-        let lastRobot = this.getEntitiesOfType(Robot)[0];
+        KB.speak('win');
+    }
+
+    addBabyRobot() {
+        const kingBox = this.getEntitiesOfType(KingBox)[0];
+        kingBox.stop();
+
+        const robots = this.getEntitiesOfType(Robot);
+        let lastRobot = robots[robots.length - 1];
         for (let i = 0; i < 10; i++) {
             const robot = new Robot(this);
             robot.midX = kingBox.midX;
@@ -361,8 +368,6 @@ export class Level {
             this.entities.push(robot);
             lastRobot = robot;
         }
-
-        KB.speak('win');
     }
 
     destroyAtCoord(tilePoint: Point) {
@@ -388,6 +393,7 @@ export class Level {
             }
         }
 
+        return baseTile == BaseTile.Wall;
         // TODO: Particles?? Maybe not needed though.
     }
 

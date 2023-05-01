@@ -43,6 +43,8 @@ export class Robot extends Entity {
     followTarget: Entity | undefined;
     followCoords: Point[] = [];
 
+    destroyedTileCount = 0;
+
     constructor(level: Level) {
         super(level);
         // TODO: Set w and h based on graphics
@@ -354,6 +356,16 @@ export class Robot extends Entity {
                 );
             }
             return this.queueAction(RobotAction.Open);
+        };
+        (window as any).stop = (argument: any) => {
+            // Hello! If you're seeing this message, you typed "stop" without adding the parentheses at the end. To call the function, type "stop()".
+            if (argument !== undefined) {
+                console.warn(
+                    `${this.emoji}: Warning: stop() does not take any arguments.`
+                );
+            }
+            this.stop();
+            return Promise.resolve();
         };
     }
 
