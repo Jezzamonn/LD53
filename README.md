@@ -26,11 +26,11 @@ To play this game, you'll need to open the developer console. There's a few ways
 - `moveRight(5)` moves the robot 5 tiles to the right (you can also use any other number)
 - `moveLeft()` moves the robot 1 tile to the left
 - `moveLeft(5)` moves the robot 5 tile to the left (you can also use any other number)
-- `jump` jumps once
-- `open` is used just once for a special purpose :)
+- `jump()` jumps once
+- `open()` is used just once for a special purpose :)
 
 
-- `mute` toggles the sound and music
+- `mute()` toggles the sound and music
 
 
 - `restart()` restarts the level
