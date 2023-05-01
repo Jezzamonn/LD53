@@ -273,7 +273,14 @@ export class Robot extends Entity {
             x: Math.floor(this.midX / TILE_SIZE) + this.facingDirMult,
             y: Math.floor(this.midY / TILE_SIZE),
         };
-        this.level.destroyAtCoord(destructCoord);
+        const destroyed = this.level.destroyAtCoord(destructCoord);
+
+        // if (destroyed) {
+        //     this.destroyedTileCount++;
+        //     if (this.destroyedTileCount % 6 == 0) {
+        //         this.level.addBabyRobot();
+        //     }
+        // }
 
         // TODO: Maybe only play explosion when actually destroying something?
         SFX.play("explode");

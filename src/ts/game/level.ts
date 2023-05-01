@@ -358,16 +358,14 @@ export class Level {
 
         const robots = this.getEntitiesOfType(Robot);
         let lastRobot = robots[robots.length - 1];
-        for (let i = 0; i < 10; i++) {
-            const robot = new Robot(this);
-            robot.midX = kingBox.midX;
-            robot.maxY = kingBox.maxY;
-            robot.dy = -10;
-            robot.followTarget = lastRobot;
 
-            this.entities.push(robot);
-            lastRobot = robot;
-        }
+        const robot = new Robot(this);
+        robot.midX = kingBox.midX;
+        robot.maxY = kingBox.maxY;
+        robot.dy = -10;
+        robot.followTarget = lastRobot;
+
+        this.entities.push(robot);
     }
 
     destroyAtCoord(tilePoint: Point) {
