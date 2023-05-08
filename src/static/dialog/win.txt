@@ -3,3 +3,5 @@
 👑: You did it! You are the champion! You win!!
 
 👑: If you want to play again, call the newGame() function!
+
+👑: For more games, check out https://jezzamon.com!
