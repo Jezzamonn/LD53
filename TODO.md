@@ -1,4 +1,4 @@
-[ ] Add name to title screen
+[x] Add name to title screen
 [ ] Upload to itch
 
 

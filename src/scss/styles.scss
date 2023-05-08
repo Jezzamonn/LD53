@@ -26,6 +26,24 @@ body {
     --pageWidth: 100vw;
 }
 
+h1, h2 {
+    font-family: 'Stapler', sans-serif;
+    margin: 0.3em 0;
+}
+
+h1 {
+    font-size: calc(var(--pageHeight) * 0.07);
+}
+
+h2 {
+    font-size: calc(var(--pageHeight) * 0.05);
+}
+
+p {
+    font-size: calc(var(--pageHeight) * 0.04);
+    margin: 0.3em 0;
+}
+
 // Make link text a little lighter
 a {
     color: #5c7aff;
@@ -59,16 +77,6 @@ a:visited {
     align-items: stretch;
 
     background: repeat url('../sprites/title-bg.png');
-
-    font-family: 'Stapler', sans-serif;
-}
-
-.title h1 {
-    font-size: calc(var(--pageHeight) * 0.07);
-}
-
-.title p {
-    font-size: calc(var(--pageHeight) * 0.05);
 }
 
 .title-box {
@@ -88,8 +96,6 @@ a:visited {
     align-items: center;
 
     background-color: rgba(0, 0, 0, 0.3);
-
-    font-size: calc(var(--pageHeight) * 0.04);
 }
 
 .instructions p {
