@@ -10,6 +10,10 @@ import { BaseTile } from "../tile/base-layer";
 import { ObjectTile } from "../tile/object-layer";
 import { Entity } from "./entity"
 
+// Hopefully large enough to not interrupt real programs.
+const MAX_QUEUED_ACTIONS = 300;
+const QUEUED_ACTION_WARNING = 50;
+
 export enum RobotAction {
     MoveLeft,
     MoveRight,
@@ -308,6 +312,19 @@ export class Robot extends Entity {
     }
 
     queueAction(action: RobotAction, data: any = undefined): Promise<void> {
+        // This check is done outside the promise so that a while loop or such will be interupted.
+        // Not the best style for promise code as it prevents the promise from being chained in the error case.
+        if (this.queuedActions.length === QUEUED_ACTION_WARNING) {
+            console.info(
+                `${this.emoji}: Look's like there are a lot of actions queued up. ` +
+                `If you want to cancel, call the stop() function.`
+            );
+        }
+        if (this.queuedActions.length >= MAX_QUEUED_ACTIONS) {
+            throw new Error(
+                `${this.emoji}: Too many actions queued!`
+            );
+        }
         return new Promise<void>((resolve) => {
             this.queuedActions.push({
                 action,
